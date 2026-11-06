@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "famiglia",
+      "runtimeExecutable": "powershell",
+      "runtimeArgs": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", "C:\\Ivano\\Progetti\\Famiglia\\strumenti\\server-locale.ps1"],
+      "port": 8765
+    }
+  ]
+}
