@@ -154,6 +154,13 @@ nav.tabs button.on{color:var(--acc)}
 .accesso .logo{width:72px;height:72px;border-radius:22px;background:var(--acc);color:var(--onacc);display:flex;align-items:center;justify-content:center;margin:28px auto 0}
 .accesso h2{font-size:26px;font-weight:800;text-align:center;margin:8px 0 0}
 .accesso p.nota{text-align:center}
+.passi{display:flex;flex-direction:column;gap:12px;padding:14px 0}
+.passi h3{margin:0;font-size:14px;font-weight:800;color:var(--mute)}
+.passo{display:flex;gap:12px;align-items:flex-start;font-size:15px;font-weight:600}
+.passo .n{width:28px;height:28px;border-radius:14px;background:var(--acc2);color:var(--acc);font-weight:800;display:flex;align-items:center;justify-content:center;flex:none}
+.passo .ic-in{display:inline-flex;vertical-align:-4px;background:var(--soft);border-radius:6px;padding:2px 4px;margin:0 2px}
+.chiave{display:flex;justify-content:space-between;align-items:center;padding:14px 0;font-size:15px;font-weight:600}
+.chiave b{font-size:18px;font-weight:800;color:var(--acc)}
 .demo{position:fixed;top:calc(4px + env(safe-area-inset-top,0px));left:50%;transform:translateX(-50%);background:var(--giallo2);color:var(--giallo);font-size:11px;font-weight:800;padding:3px 10px;border-radius:10px;z-index:30}
 .toast{position:fixed;left:50%;bottom:calc(96px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);font-size:14px;font-weight:700;padding:10px 16px;border-radius:14px;z-index:40;max-width:90vw}
 </style>
@@ -166,13 +173,18 @@ nav.tabs button.on{color:var(--acc)}
   <h2 id="aTitolo">Famiglia</h2>
   <p class="nota" id="aNota"></p>
   <div class="card">
+    <label class="riga" id="aRigaFam"><span class="lb">Nome della famiglia</span><input type="text" id="aFam" maxlength="40" placeholder="Famiglia Rossi"></label>
     <label class="riga" id="aRigaNome"><span class="lb">Il tuo nome</span><input type="text" id="aNome" autocomplete="given-name" placeholder="Mamma"></label>
-    <label class="riga" id="aRigaUser"><span class="lb">Nome utente</span><input type="text" id="aUser" autocomplete="username" autocapitalize="none" spellcheck="false" placeholder="mamma"></label>
+    <label class="riga" id="aRigaUser"><span class="lb">Nome utente</span><input type="text" id="aUser" autocomplete="username" autocapitalize="none" spellcheck="false" placeholder="mamma o la tua email"></label>
     <label class="riga"><span class="lb">Password</span><input type="password" id="aPass" autocomplete="current-password" placeholder="almeno 8 caratteri"></label>
   </div>
   <p class="err" id="aErr" role="alert"></p>
   <button class="primary" id="aVai">Entra</button>
+  <button class="secondo" id="aCambia"></button>
 </div>
+
+<!-- Ultimo passo: dopo invito, nuova famiglia o nuova password aperti nel browser -->
+<div class="view accesso" id="vPasso" hidden></div>
 
 <!-- App -->
 <div class="view" id="vOggi" hidden></div>
@@ -212,6 +224,7 @@ const IC = {
   clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>', car:'<path d="M5 16V11l2-5h10l2 5v5"/><path d="M3 16h18v3H3z"/><circle cx="7.5" cy="13" r=".5"/><circle cx="16.5" cy="13" r=".5"/>',
   bell:'<path d="M6 17V11a6 6 0 0112 0v6l2 2H4z"/><path d="M10 21h4"/>', pin:'<path d="M12 21s-7-6.5-7-12a7 7 0 0114 0c0 5.5-7 12-7 12z"/><circle cx="12" cy="9" r="2.5"/>',
   alert:'<path d="M12 3l10 18H2z"/><path d="M12 10v5M12 18v.5"/>', rep:'<path d="M4 12a8 8 0 0114-5l2 2M20 12a8 8 0 01-14 5l-2-2"/><path d="M20 4v5h-5M4 20v-5h5"/>',
+  check:'<path d="M5 12.5l4.5 4.5L19 7.5"/>',
   bulb:'<path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 00-4 10.5c.7.7 1 1.5 1 2.5h6c0-1 .3-1.8 1-2.5A6 6 0 0012 3z"/>',
   eyeoff:'<path d="M3 3l18 18"/><path d="M10.6 6.1A10 10 0 0112 6c5 0 9 6 9 6a17 17 0 01-2.6 3.2M6.6 7.6C4.2 9.3 3 12 3 12s4 6 9 6a9 9 0 004.3-1.1"/><path d="M9.9 9.9a3 3 0 004.2 4.2"/>',
   share:'<path d="M12 3v12M7 8l5-5 5 5"/><path d="M5 13v7h14v-7"/>', link:'<path d="M10 14a4 4 0 006 0l3-3a4 4 0 00-6-6l-1 1"/><path d="M14 10a4 4 0 00-6 0l-3 3a4 4 0 006 6l1-1"/>',
@@ -256,7 +269,8 @@ function occorrenze(e, da, a) {
 }
 
 // ---------- Stato
-let TOKEN = ls.get('famiglia-token') || '';
+const KTOKEN = DEMO ? 'famiglia-prova-token' : 'famiglia-token'; // la prova ha un accesso tutto suo
+let TOKEN = ls.get(KTOKEN) || '';
 let D = null;          // dati dal server: io, utenti, membri, impegni
 let TAB = ls.get('famiglia-tab') || 'oggi';
 let VISTA = ls.get('famiglia-vista') || 'settimana';
@@ -460,15 +474,21 @@ function renderFam() {
   const io = D.io;
   const righe = (D.membri.filter((m) => !m.archiviato)).map((m) => {
     const u = m.utente_id ? D.utenti.find((x) => x.id === m.utente_id) : null;
-    const stato = u ? `ha l'account · ${esc(u.username)}${u.admin ? ' · amministratore' : ''}` : (m.tipo === 'adulto' ? 'senza account' : TIPI[m.tipo]);
-    const azione = !u && m.tipo === 'adulto' ? `<span class="pill" data-invita="${m.id}">Invita</span>` : '';
+    const stato = u ? `ha l'account · ${esc(u.username)}${u.capo ? ' · Capofamiglia' : ''}` : (m.tipo === 'adulto' ? 'senza account' : TIPI[m.tipo]);
+    const azione = io.capo && !u && m.tipo === 'adulto' ? `<span class="pill" data-invita="${m.id}">Invita</span>` : '';
     return `<button class="mb" data-membro="${m.id}"><span class="av" style="--c:${m.colore}">${esc(m.nome.slice(0,1).toUpperCase())}</span><span class="tx"><b>${esc(m.nome)}${m.id === io.membro ? ' (tu)' : ''}</b><small>${stato}</small></span>${azione}</button>`;
   }).join('');
   const archiviati = D.membri.filter((m) => m.archiviato);
   $('vFam').innerHTML = `
-    <div class="top"><div><h1>Famiglia</h1><span class="sub">Chi può avere impegni</span></div><button class="nuovo" id="fAgg" aria-label="Aggiungi membro">${ic('plus', 24)}</button></div>
+    <div class="top"><div><h1>${esc(D.famiglia?.nome || 'Famiglia')}</h1><span class="sub">${io.capo ? 'Sei il Capofamiglia' : 'Capofamiglia: ' + esc(nomeUtente(D.utenti.find((u) => u.capo)?.id))}</span></div><button class="nuovo" id="fAgg" aria-label="Aggiungi membro">${ic('plus', 24)}</button></div>
     <div class="card">${righe || '<p class="vuoto">Aggiungi i membri della famiglia.</p>'}</div>
-    <p class="nota">I bambini e i gruppi (per esempio "Famiglia" o il cane) hanno impegni ma non un account. Un adulto senza account si può invitare: riceve un link per entrare.</p>
+    <p class="nota">I bambini e i gruppi (per esempio "Famiglia" o il cane) hanno impegni ma non un account. ${io.capo ? 'Un adulto senza account si può invitare: riceve un link per entrare.' : 'Per dare un account a un adulto chiedi al Capofamiglia di invitarlo.'}</p>
+    ${io.capo ? `<div class="sez"><h2>Capofamiglia</h2></div>
+    <div class="card">
+      <button class="riga" id="fNomeFam">Nome della famiglia <span class="lb">${esc(D.famiglia?.nome || '')} ›</span></button>
+      ${D.utenti.filter((u) => u.id !== io.id).map((u) => `<button class="riga" data-reset="${u.id}"><span>${esc(nomeUtente(u.id))} <small>${esc(u.username)}</small></span><span class="lb">link nuova password ›</span></button>`).join('')}
+      ${D.utenti.length > 1 ? '<button class="riga" id="fPassaCapo">Passa il ruolo di Capofamiglia <span class="lb">›</span></button>' : ''}
+    </div>` : ''}
     ${archiviati.length ? `<div class="sez"><h2>Tolti</h2></div><div class="card">${archiviati.map((m) => `<button class="mb" data-membro="${m.id}"><span class="av" style="--c:${m.colore}">${esc(m.nome.slice(0,1))}</span><span class="tx"><b>${esc(m.nome)}</b><small>tocca per rimetterlo</small></span></button>`).join('')}</div>` : ''}
     <div class="sez"><h2>Questo telefono</h2></div>
     <div class="card">
@@ -477,7 +497,6 @@ function renderFam() {
       <button class="riga" id="fPass">Cambia password <span class="lb">›</span></button>
       <button class="riga" id="fEsci">Esci da questo telefono <span class="lb">›</span></button>
     </div>
-    ${io.admin ? `<div class="sez"><h2>Account</h2></div><div class="card">${D.utenti.map((u) => `<button class="riga" data-reset="${u.id}"><span>${esc(nomeUtente(u.id))} <small>${esc(u.username)}</small></span><span class="lb">link nuova password ›</span></button>`).join('')}</div>` : ''}
     ${DEMO ? `<div class="sez"><h2>Prova</h2></div>
     <p class="nota">Stai usando la versione di prova: i dati restano solo in questo browser. Prova a entrare come l'altro genitore per vedere cosa vede degli impegni privati.</p>
     <div class="seg" style="grid-template-columns:repeat(${D.utenti.length},1fr)">${D.utenti.map((u) => `<button data-provacome="${u.id}" class="${u.id === io.id ? 'on' : ''}">${esc(nomeUtente(u.id))}</button>`).join('')}</div>
@@ -540,6 +559,8 @@ document.addEventListener('click', (ev) => {
   if (t.closest('#fRicomincia')) { if (confirm('Cancellare tutto quello che hai inserito nella prova e ripartire dai dati di esempio?')) call('/demo/ricomincia', {}).then(() => { TAB = 'oggi'; carica(); toast('Prova ricominciata'); }); return; }
   if (t.closest('#fAgg')) { apriMembro(null); return; }
   if (t.closest('#fPass')) { apriPassword(); return; }
+  if (t.closest('#fNomeFam')) { apriNomeFamiglia(); return; }
+  if (t.closest('#fPassaCapo')) { apriPassaCapo(); return; }
   if (t.closest('#fEsci')) { if (confirm('Uscire da questo telefono?')) esci(false); return; }
   if (t.closest('#fEsciTutti')) { if (confirm('Uscire da tutti i telefoni, compreso questo?')) esci(false, true); return; }
   if (t.closest('#nProva')) { call('/push/prova', {}).then((r) => toast(r.inviati ? 'Notifica inviata' : 'Nessun telefono con le notifiche attive')).catch((e) => toast(e.message)); return; }
@@ -739,8 +760,31 @@ async function invita(id) {
   catch(e) { toast(e.message); }
 }
 async function linkPassword(uid) {
-  try { const r = await call('/admin/link-password', { user_id: uid }); mostraLink('Nuova password', `Con questo link ${r.username} sceglie una nuova password. Vale 24 ore, una volta sola.`, linkCon('reimposta', r.codice)); }
+  try { const r = await call('/capo/link-password', { user_id: uid }); mostraLink('Nuova password', `Con questo link ${r.username} sceglie una nuova password. Vale 24 ore, una volta sola.`, linkCon('reimposta', r.codice)); }
   catch(e) { toast(e.message); }
+}
+function apriNomeFamiglia() {
+  apriScheda(`
+    <div class="top"><button class="lnk l" id="nfAnn">Annulla</button><h2>Nome della famiglia</h2><span class="lnk"></span></div>
+    <div class="card"><input class="big-in" id="nfNome" maxlength="40" value="${esc(D.famiglia?.nome || '')}" placeholder="Famiglia Rossi"></div>
+    <p class="err" id="nfErr" role="alert"></p>
+    <button class="primary" id="nfOk">Salva</button>`);
+  $('nfAnn').onclick = chiudiScheda;
+  $('nfOk').onclick = async () => { try { await call('/famiglia/nome', { nome: $('nfNome').value.trim() }); chiudiScheda(); await carica(); toast('Nome cambiato'); } catch(e) { $('nfErr').textContent = e.message; } };
+}
+function apriPassaCapo() {
+  const altri = D.utenti.filter((u) => u.id !== D.io.id);
+  apriScheda(`
+    <div class="top"><button class="lnk l" id="pcAnn">Annulla</button><h2>Nuovo Capofamiglia</h2><span class="lnk"></span></div>
+    <p class="nota" style="font-size:15px;color:var(--ink)">Il nuovo Capofamiglia potrà invitare, generare i link per una nuova password e cambiare il nome della famiglia. Tu resti nella famiglia come gli altri adulti.</p>
+    <div class="card">${altri.map((u) => `<button class="riga" data-nuovocapo="${u.id}"><span>${esc(nomeUtente(u.id))} <small>${esc(u.username)}</small></span><span class="lb">scegli ›</span></button>`).join('')}</div>`);
+  $('pcAnn').onclick = chiudiScheda;
+  $('sheetWrap').onclick = async (ev) => {
+    const b = ev.target.closest('[data-nuovocapo]'); if (!b) return;
+    const uid = Number(b.dataset.nuovocapo);
+    if (!confirm(`Passare il ruolo di Capofamiglia a ${nomeUtente(uid)}? Non potrai riprenderlo da solo.`)) return;
+    try { await call('/capo/passa', { user_id: uid }); chiudiScheda(); await carica(); toast('Ora il Capofamiglia è ' + nomeUtente(uid)); } catch(e) { toast(e.message); }
+  };
 }
 function apriPassword() {
   apriScheda(`
@@ -754,6 +798,40 @@ function apriPassword() {
     <p class="nota">Gli altri telefoni collegati al tuo account dovranno rientrare.</p>`);
   $('pAnn').onclick = chiudiScheda;
   $('pOk').onclick = async () => { try { await call('/password', { vecchia: $('pV').value, nuova: $('pN').value }); chiudiScheda(); toast('Password cambiata'); } catch(e) { $('pErr').textContent = e.message; } };
+}
+
+// ---------- Ultimo passo: aggiungere l'app alla schermata Home
+const iPhone = () => /iPhone|iPad|iPod/.test(navigator.userAgent) || (/Macintosh/.test(navigator.userAgent) && navigator.maxTouchPoints > 1);
+const android = () => /Android/.test(navigator.userAgent);
+const telefono = () => iPhone() || android();
+let richiestaInstalla = null; // Android/Chrome: permette il pulsante "Installa l'app"
+window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); richiestaInstalla = e; });
+function ultimoPasso(username) {
+  for (const id of ['vAccesso','vOggi','vCal','vFam','tabs']) $(id).hidden = true;
+  const ios = iPhone(), and = android(), pc = !ios && !and;
+  const passiIphone = `<div class="passi">${pc ? '<h3>Su iPhone</h3>' : ''}
+      <div class="passo"><span class="n">1</span><span>In basso tocca <span class="ic-in">${ic('share',16)}</span> <b>Condividi</b>.<br><small class="nota" style="margin:0">Se il link si è aperto dentro WhatsApp, prima tocca la bussola per aprirlo in Safari.</small></span></div>
+      <div class="passo"><span class="n">2</span><span>Scorri e tocca <b>Aggiungi alla schermata Home</b>, poi <b>Aggiungi</b>.</span></div>
+      <div class="passo"><span class="n">3</span><span>Apri <b>Famiglia</b> dall'icona sulla schermata Home ed entra con il nome utente qui sopra e la tua password.</span></div>
+    </div>`;
+  const passiAndroid = `<div class="passi">${pc ? '<h3>Su Android</h3>' : ''}
+      ${richiestaInstalla ? '<button class="primary" id="upInstalla">Installa l\'app</button>' : `
+      <div class="passo"><span class="n">1</span><span>In alto a destra tocca <span class="ic-in"><b>⋮</b></span>.</span></div>
+      <div class="passo"><span class="n">2</span><span>Tocca <b>Installa app</b> (o <b>Aggiungi a schermata Home</b>).</span></div>
+      <div class="passo"><span class="n">3</span><span>Apri <b>Famiglia</b> dall'icona: di solito sei già dentro, altrimenti entra con il nome utente qui sopra.</span></div>`}
+    </div>`;
+  $('vPasso').innerHTML = `
+    <div class="logo" aria-hidden="true">${ic('check', 38)}</div>
+    <h2>Ultimo passo</h2>
+    <p class="nota">Sei dentro! Per avere Famiglia come un'app e ricevere le notifiche, aggiungila alla schermata Home.</p>
+    <div class="card"><div class="chiave"><span>Il tuo nome utente</span><b>${esc(username)}</b></div></div>
+    <p class="nota">${ios || pc ? "Sull'iPhone l'app sulla schermata Home non conosce l'accesso fatto in Safari: lì dovrai entrare di nuovo, con questo nome utente e la tua password." : ''}</p>
+    <div class="card">${ios ? passiIphone : and ? passiAndroid : passiIphone + passiAndroid}</div>
+    <button class="secondo" id="upContinua">Continua nel browser</button>
+    <p class="nota">Puoi usarla anche così, ma le notifiche arrivano solo dall'app sulla schermata Home.</p>`;
+  $('vPasso').hidden = false; window.scrollTo(0, 0);
+  $('upContinua').onclick = async () => { $('vPasso').hidden = true; await carica(); };
+  if ($('upInstalla')) $('upInstalla').onclick = async () => { richiestaInstalla.prompt(); try { await richiestaInstalla.userChoice; } catch(e){} richiestaInstalla = null; };
 }
 
 // ---------- Notifiche push
@@ -794,42 +872,70 @@ async function disattivaNotifiche() {
 let MODO = 'accedi', CODICE = '';
 async function mostraAccesso() {
   D = null; TOKEN = '';
-  for (const id of ['vOggi','vCal','vFam','tabs']) $(id).hidden = true;
+  for (const id of ['vOggi','vCal','vFam','tabs','vPasso']) $(id).hidden = true;
   $('vAccesso').hidden = false;
-  let nomeInvito = '';
+  INVITO = { nome: '', famiglia: '' }; MODO = 'accedi';
   if (Q.get('reimposta')) { MODO = 'reimposta'; CODICE = Q.get('reimposta'); }
-  else {
+  else if (Q.get('invito')) {
+    MODO = 'accedi';
     try {
-      const r = await call('/inizio' + (Q.get('invito') ? '?invito=' + encodeURIComponent(Q.get('invito')) : ''));
-      if (Q.get('invito') && r.invito) { MODO = 'invito'; CODICE = Q.get('invito'); nomeInvito = r.invito.nome; }
-      else if (r.vuota) MODO = 'primo';
-      else { MODO = 'accedi'; if (Q.get('invito')) $('aErr').textContent = 'Questo invito non è valido o è scaduto: chiedine uno nuovo. Se hai già un account, entra qui sotto.'; }
+      const r = await call('/inizio?invito=' + encodeURIComponent(Q.get('invito')));
+      if (r.invito) { MODO = 'invito'; CODICE = Q.get('invito'); INVITO = r.invito; }
+      else $('aErr').textContent = 'Questo invito non è valido o è scaduto: chiedine uno nuovo al Capofamiglia. Se hai già un account, entra qui sotto.';
     } catch(e) { $('aErr').textContent = e.message; }
   }
-  const T = {
-    accedi: ['Famiglia', 'Entra con il tuo nome utente e la password.', 'Entra'],
-    primo: ['Benvenuto', 'Sei il primo: crea il tuo account. Poi aggiungi i membri della famiglia e invita gli altri.', 'Crea account'],
-    invito: ['Sei stato invitato', nomeInvito ? `Ciao ${nomeInvito}: scegli il nome utente e la password per entrare.` : 'Scegli il tuo nome, il nome utente e la password per entrare.', 'Entra in famiglia'],
-    reimposta: ['Nuova password', 'Scegli la nuova password.', 'Salva e entra'],
-  }[MODO];
-  $('aTitolo').textContent = T[0]; $('aNota').textContent = T[1]; $('aVai').textContent = T[2];
-  $('aRigaNome').hidden = !(MODO === 'primo' || (MODO === 'invito' && !nomeInvito));
-  $('aRigaUser').hidden = MODO === 'reimposta';
-  $('aPass').autocomplete = MODO === 'accedi' ? 'current-password' : 'new-password';
+  modoAccesso(MODO);
 }
+// Nome utente: stesso controllo del server (lettere senza accenti, numeri, . _ - @); "" se va bene
+function erroreUser(u) {
+  if (!u) return 'Scrivi un nome utente.';
+  if (u.length < 3) return 'Il nome utente è troppo corto: servono almeno 3 caratteri.';
+  if (u.length > 50) return 'Il nome utente è troppo lungo: al massimo 50 caratteri.';
+  if (/\s/.test(u)) return 'Il nome utente non può contenere spazi: usa per esempio un punto (ivano.perego).';
+  const no = [...u].find((c) => !/[a-z0-9._@-]/.test(c));
+  if (no) return `Nel nome utente il carattere «${no}» non è ammesso: usa lettere senza accenti, numeri, punto, trattino, trattino basso o @.`;
+  return '';
+}
+// Le quattro facce della schermata di accesso
+let INVITO = { nome: '', famiglia: '' };
+function modoAccesso(m) {
+  MODO = m;
+  const fam = INVITO.famiglia ? ` in ${INVITO.famiglia}` : '';
+  const T = {
+    accedi: ['Famiglia', 'Entra con il tuo nome utente e la password.', 'Entra', 'Nuova famiglia? Registrati'],
+    nuova: ['Nuova famiglia', 'Crea la tua famiglia: diventi il Capofamiglia e poi inviti i tuoi familiari.', 'Crea la famiglia', 'Hai già un account? Entra'],
+    invito: ['Sei stato invitato', (INVITO.nome ? `Ciao ${INVITO.nome}: ` : '') + `scegli nome utente e password per entrare${fam}.`, 'Entra in famiglia', ''],
+    reimposta: ['Nuova password', 'Scegli la nuova password.', 'Salva e entra', ''],
+  }[m];
+  $('aTitolo').textContent = T[0]; $('aVai').textContent = T[2];
+  $('aNota').textContent = T[1] + (DEMO && m === 'accedi' ? ' Nella prova entra come «mamma» o «papa», con una password qualsiasi.' : '');
+  $('aCambia').textContent = T[3]; $('aCambia').hidden = !T[3];
+  $('aRigaFam').hidden = m !== 'nuova';
+  $('aRigaNome').hidden = !(m === 'nuova' || (m === 'invito' && !INVITO.nome));
+  $('aRigaUser').hidden = m === 'reimposta';
+  $('aPass').autocomplete = m === 'accedi' ? 'current-password' : 'new-password';
+}
+$('aCambia').onclick = () => { $('aErr').textContent = ''; modoAccesso(MODO === 'accedi' ? 'nuova' : 'accedi'); };
 $('aVai').onclick = async () => {
   $('aErr').textContent = '';
-  const body = { username: $('aUser').value, password: $('aPass').value, nome: $('aNome').value };
+  const body = { username: $('aUser').value, password: $('aPass').value, nome: $('aNome').value, famiglia: $('aFam').value };
+  if (MODO === 'nuova' || MODO === 'invito') {
+    const eu = erroreUser(body.username.trim().toLowerCase());
+    if (eu) { $('aErr').textContent = eu; return; }
+    if (body.password.length < 8) { $('aErr').textContent = 'La password deve avere almeno 8 caratteri.'; return; }
+  }
   try {
     $('aVai').disabled = true;
     let r;
     if (MODO === 'accedi') r = await call('/accedi', body);
-    else if (MODO === 'primo') r = await call('/registrati', body);
+    else if (MODO === 'nuova') r = await call('/registrati', { ...body, invito: undefined });
     else if (MODO === 'invito') r = await call('/registrati', { ...body, invito: CODICE });
     else r = await call('/reimposta', { codice: CODICE, password: body.password });
-    TOKEN = r.token; ls.set('famiglia-token', TOKEN);
+    TOKEN = r.token; ls.set(KTOKEN, TOKEN);
     if (Q.has('invito') || Q.has('reimposta')) history.replaceState(null, '', baseUrl() + (DEMO ? '?demo' : ''));
-    TAB = MODO === 'primo' ? 'fam' : 'oggi';
+    TAB = MODO === 'nuova' ? 'fam' : 'oggi'; // chi crea la famiglia parte dai membri da aggiungere
+    // Aperto da un link nel browser del telefono: prima si spiega come avere l'app sulla schermata Home
+    if (MODO !== 'accedi' && !standalone() && (telefono() || DEMO)) { ultimoPasso(r.username || body.username.trim().toLowerCase()); return; }
     await carica();
   } catch(e) { $('aErr').textContent = e.message; }
   finally { $('aVai').disabled = false; }
@@ -842,7 +948,7 @@ async function esci(scaduto, tutti) {
     try { await call('/esci', { tutti: !!tutti, endpoint: sub?.endpoint }); } catch(e){}
     if (sub) try { await sub.unsubscribe(); } catch(e){}
   }
-  ls.set('famiglia-token', null); ls.set('famiglia-dati', null); ls.set('famiglia-notif', null);
+  ls.set(KTOKEN, null); ls.set('famiglia-dati', null); ls.set('famiglia-notif', null);
   chiudiScheda(); mostraAccesso();
 }
 
@@ -851,11 +957,13 @@ let DB = null;
 try { DB = JSON.parse(ls.get('famiglia-prova-db') || 'null'); } catch(e){}
 // Prove salvate prima del campo "da accompagnare": lo deduce da chi accompagnava già
 if (DB) for (const e of DB.impegni) if (e.da_accompagnare === undefined) e.da_accompagnare = !!e.accompagna || e.titolo === 'Danza';
+// Prove salvate prima delle famiglie: Mamma diventa Capofamiglia della Famiglia Rossi
+if (DB) { DB.famiglia ??= 'Famiglia Rossi'; DB.capo ??= 1; }
 function demoCall(path, b) {
   if (path === '/demo/ricomincia') DB = null;
   if (!DB) {
     const g = oggi(), dow = wd(d2n(g));
-    DB = { uid: 1, utenti: [{ id: 1, username: 'mamma', admin: true }, { id: 2, username: 'papa', admin: false }],
+    DB = { uid: 1, famiglia: 'Famiglia Rossi', capo: 1, utenti: [{ id: 1, username: 'mamma' }, { id: 2, username: 'papa' }],
       membri: [{ id: 1, nome: 'Mamma', colore: '#D4537E', tipo: 'adulto', utente_id: 1, ordine: 0, archiviato: false },
         { id: 2, nome: 'Papà', colore: '#378ADD', tipo: 'adulto', utente_id: 2, ordine: 1, archiviato: false },
         { id: 3, nome: 'Luca', colore: '#1D9E75', tipo: 'bambino', utente_id: null, ordine: 2, archiviato: false },
@@ -881,11 +989,34 @@ function demoCall(path, b) {
   return new Promise((ok0x, ko) => setTimeout(() => {
     const ok = (v) => ok0(ok0x, v);
     try {
-      if (path.startsWith('/inizio')) return ok({ vuota: false, invito: path.includes('invito') ? { nome: 'Nonna' } : null });
-      if (path === '/accedi') { const u = DB.utenti.find((x) => x.username === String(b.username || '').trim().toLowerCase()); DB.uid = u ? u.id : 1; return ok({ token: 'demo' }); }
-      if (path === '/registrati' || path === '/reimposta') return ok({ token: 'demo' });
+      if (path.startsWith('/inizio')) return ok({ invito: path.includes('invito') ? { nome: 'Nonna', famiglia: DB.famiglia } : null });
+      if (path === '/accedi') {
+        const u = DB.utenti.find((x) => x.username === String(b.username || '').trim().toLowerCase());
+        if (!u || !b.password) return ko(new Error('Nome utente o password sbagliati. Nella prova: ' + DB.utenti.map((x) => x.username).join(' o ') + ', password qualsiasi.'));
+        DB.uid = u.id; return ok({ token: 'demo' });
+      }
+      if (path === '/registrati') {
+        const username = String(b.username || '').trim().toLowerCase(), nome = String(b.nome || '').trim(), fam = String(b.famiglia || '').trim();
+        if (erroreUser(username)) return ko(new Error(erroreUser(username)));
+        if (String(b.password || '').length < 8) return ko(new Error('La password deve avere almeno 8 caratteri.'));
+        if (b.invito) {
+          if (DB.utenti.some((u) => u.username === username)) return ko(new Error('Questo nome utente è già usato: scegline un altro.'));
+          const id = Math.max(...DB.utenti.map((u) => u.id)) + 1;
+          DB.utenti.push({ id, username });
+          const m = DB.membri.find((x) => x.nome === 'Nonna' && !x.utente_id);
+          if (m) m.utente_id = id; else DB.membri.push({ id: Math.max(...DB.membri.map((x) => x.id)) + 1, nome: nome || username, colore: '#639922', tipo: 'adulto', utente_id: id, ordine: DB.membri.length, archiviato: false });
+          DB.uid = id; return ok({ token: 'demo' });
+        }
+        if (!fam) return ko(new Error('Scrivi il nome della famiglia, per esempio Famiglia Rossi.'));
+        if (!nome) return ko(new Error('Scrivi il tuo nome.'));
+        // Nuova famiglia vuota: prende il posto della Famiglia Rossi (torna con "Ricomincia la prova")
+        DB = { uid: 1, famiglia: fam, capo: 1, utenti: [{ id: 1, username }], impegni: [],
+          membri: [{ id: 1, nome, colore: '#D4537E', tipo: 'adulto', utente_id: 1, ordine: 0, archiviato: false }] };
+        return ok({ token: 'demo' });
+      }
+      if (path === '/reimposta') return ok({ token: 'demo', username: DB.utenti.find((u) => u.id === DB.uid)?.username || 'mamma' });
       if (path === '/demo/utente') { DB.uid = Number(b.uid); return ok({ ok: true }); }
-      if (path === '/dati') { const me = DB.utenti.find((u) => u.id === DB.uid); return ok(clone({ io: { id: me.id, username: me.username, admin: me.admin, membro: DB.membri.find((m) => m.utente_id === me.id)?.id ?? null }, utenti: DB.utenti, membri: DB.membri, impegni: DB.impegni.filter((e) => !e.cancellato).map(vista).filter(Boolean) })); }
+      if (path === '/dati') { const me = DB.utenti.find((u) => u.id === DB.uid); return ok(clone({ io: { id: me.id, username: me.username, capo: me.id === DB.capo, membro: DB.membri.find((m) => m.utente_id === me.id)?.id ?? null }, famiglia: { nome: DB.famiglia }, utenti: DB.utenti.map((u) => ({ ...u, capo: u.id === DB.capo })), membri: DB.membri, impegni: DB.impegni.filter((e) => !e.cancellato).map(vista).filter(Boolean) })); }
       if (path === '/impegno') {
         const i = DB.impegni.findIndex((x) => x.id === b.id);
         if (i >= 0 && DB.impegni[i].creato_da !== DB.uid && DB.impegni[i].visibilita !== 'condiviso') return ko(new Error('Solo chi l\'ha creato può modificare questo impegno.'));
@@ -896,8 +1027,11 @@ function demoCall(path, b) {
       }
       if (path === '/impegno/elimina') { const e = DB.impegni.find((x) => x.id === b.id); if (e) { if (b.solo_giorno) e.eccezioni.push(b.solo_giorno); else e.cancellato = true; } return ok({ ok: true }); }
       if (path === '/membro') { if (b.id) Object.assign(DB.membri.find((m) => m.id === b.id), b); else DB.membri.push({ ...b, id: Math.max(...DB.membri.map((m) => m.id)) + 1, utente_id: null }); return ok({ ok: true }); }
+      if (['/invito', '/capo/link-password', '/capo/passa', '/famiglia/nome'].includes(path) && DB.uid !== DB.capo) return ko(new Error('Solo il Capofamiglia può farlo.'));
       if (path === '/invito') return ok({ codice: 'prova-invito', nome: DB.membri.find((m) => m.id === b.membro_id).nome });
-      if (path === '/admin/link-password') return ok({ codice: 'prova-password', username: DB.utenti.find((u) => u.id === b.user_id).username });
+      if (path === '/famiglia/nome') { if (!String(b.nome || '').trim()) return ko(new Error('Scrivi il nome della famiglia.')); DB.famiglia = String(b.nome).trim(); return ok({ ok: true }); }
+      if (path === '/capo/passa') { DB.capo = Number(b.user_id); return ok({ ok: true }); }
+      if (path === '/capo/link-password') return ok({ codice: 'prova-password', username: DB.utenti.find((u) => u.id === b.user_id).username });
       if (path === '/vapid') return ok({ chiave: '' });
       if (path === '/push/prova') return ko(new Error('Nella prova le notifiche non sono attive.'));
       return ok({ ok: true });
@@ -907,7 +1041,7 @@ function demoCall(path, b) {
 
 // ---------- Avvio
 if ('serviceWorker' in navigator && !DEMO && location.protocol === 'https:') navigator.serviceWorker.register('sw.js').catch(() => {});
-if (DEMO) { const t = document.createElement('div'); t.className = 'demo'; t.textContent = 'PROVA · dati finti'; document.body.appendChild(t); if (!TOKEN) TOKEN = 'demo'; D = null; }
+if (DEMO) { const t = document.createElement('div'); t.className = 'demo'; t.textContent = 'PROVA · dati finti'; document.body.appendChild(t); D = null; }
 document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible' && TOKEN && D) { if (GIORNO < oggi() && TAB === 'oggi') GIORNO = oggi(); carica(); } });
 if (Q.get('invito') || Q.get('reimposta')) { if (DEMO) TOKEN = ''; mostraAccesso(); }
 else if (TOKEN) { if (D) render(); carica(); }

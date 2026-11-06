@@ -7,7 +7,17 @@ const db = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SE
 const VAPID_PUBLIC = Deno.env.get("VAPID_PUBLIC") || "";
 const PUSH_OK = !!(VAPID_PUBLIC && Deno.env.get("VAPID_PRIVATE"));
 if (PUSH_OK) webpush.setVapidDetails("mailto:" + (Deno.env.get("VAPID_EMAIL") || "famiglia@example.com"), VAPID_PUBLIC, Deno.env.get("VAPID_PRIVATE")!);
-const CRON_CODICE = Deno.env.get("CRON_CODICE") || "";
+// Codice del giro dei promemoria: lo genera 1-tabelle.sql nella tabella famiglia_config
+let codiceCron = "";
+async function cronValido(req: Request) {
+  const dato = req.headers.get("x-cron") || "";
+  if (!dato) return false;
+  if (!codiceCron) {
+    const { data } = await db.from("famiglia_config").select("valore").eq("chiave", "cron").maybeSingle();
+    codiceCron = data?.valore || "";
+  }
+  return !!codiceCron && dato === codiceCron;
+}
 
 const cors = { "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Headers": "x-token, content-type", "Access-Control-Allow-Methods": "GET,POST,OPTIONS" };
 const json = (b: unknown, s = 200) => new Response(JSON.stringify(b), { status: s, headers: { ...cors, "content-type": "application/json" } });
@@ -44,10 +54,19 @@ async function checkPw(pw: string, stored: string | null) {
 const testo = (s: unknown, max: number) => String(s ?? "").replace(/\s+/g, " ").trim().slice(0, max);
 const testoLungo = (s: unknown, max: number) => String(s ?? "").trim().slice(0, max);
 const pulisciUser = (s: unknown) => String(s ?? "").trim().toLowerCase();
-const userOk = (u: string) => /^[a-z0-9._-]{3,30}$/.test(u);
+// Nome utente: lettere senza accenti, numeri, punto, trattino, trattino basso e @ (così vale anche un'email).
+// Restituisce il motivo preciso se non va bene, altrimenti "".
+function erroreUser(u: string) {
+  if (!u) return "Scrivi un nome utente.";
+  if (u.length < 3) return "Il nome utente è troppo corto: servono almeno 3 caratteri.";
+  if (u.length > 50) return "Il nome utente è troppo lungo: al massimo 50 caratteri.";
+  if (/\s/.test(u)) return "Il nome utente non può contenere spazi: usa per esempio un punto (ivano.perego).";
+  const no = [...u].find((c) => !/[a-z0-9._@-]/.test(c));
+  if (no) return `Nel nome utente il carattere «${no}» non è ammesso: usa lettere senza accenti, numeri, punto, trattino, trattino basso o @.`;
+  return "";
+}
 const pwOk = (p: unknown) => typeof p === "string" && p.length >= 8 && p.length <= 200;
 const MSG_PW = "La password deve avere almeno 8 caratteri.";
-const MSG_USER = "Il nome utente deve avere da 3 a 30 caratteri: lettere, numeri, punto, trattino o trattino basso, senza spazi.";
 const COLORI_OK = /^#[0-9a-fA-F]{6}$/;
 
 async function nuovaSessione(uid: number) {
@@ -74,13 +93,17 @@ async function troppiTentativi(tipo: string, max: number) {
   return (data || []).length >= max;
 }
 const segnaTentativo = (tipo: string) => db.from("famiglia_tentativi_falliti").insert({ tipo });
+// L'utente con la sua famiglia; capo = è il Capofamiglia
 async function utente(id: number) {
-  const { data } = await db.from("famiglia_utenti").select("id,username,admin,pass").eq("id", id).maybeSingle();
-  return data;
+  const { data: u } = await db.from("famiglia_utenti").select("id,username,pass,famiglia_id").eq("id", id).maybeSingle();
+  if (!u) return null;
+  const { data: f } = await db.from("famiglia_famiglie").select("id,nome,capo_id").eq("id", u.famiglia_id).maybeSingle();
+  if (!f) return null;
+  return { ...u, fid: Number(u.famiglia_id), famiglia: f.nome as string, capo: Number(f.capo_id) === Number(u.id) };
 }
 // Un link (invito o nuova password) valido e non ancora usato; lo segna come usato una volta sola
 async function prendiLink(codice: string, tipo: string) {
-  const { data: l } = await db.from("famiglia_link").select("h,tipo,user_id,membro_id,scade,usato").eq("h", await sha(codice)).maybeSingle();
+  const { data: l } = await db.from("famiglia_link").select("h,tipo,famiglia_id,user_id,membro_id,scade,usato").eq("h", await sha(codice)).maybeSingle();
   if (!l || l.tipo !== tipo || l.usato || Date.parse(l.scade) < Date.now()) return null;
   return l;
 }
@@ -130,7 +153,7 @@ function occorrenze(e: any, da: string, a: string): string[] {
 }
 
 // ---------- Privacy: cosa vede un utente di un impegno
-const CAMPI = "id,titolo,giorno,giorno_fine,ora_inizio,ora_fine,luogo,note,visibilita,creato_da,membri,da_accompagnare,accompagna,ripeti,giorni_sett,fino_a,eccezioni,promemoria_min,aggiornato";
+const CAMPI = "id,famiglia_id,titolo,giorno,giorno_fine,ora_inizio,ora_fine,luogo,note,visibilita,creato_da,membri,da_accompagnare,accompagna,ripeti,giorni_sett,fino_a,eccezioni,promemoria_min,aggiornato";
 function perUtente(e: any, uid: number) {
   const mio = Number(e.creato_da) === uid;
   const base = { ...e, creato_da: Number(e.creato_da), membri: (e.membri || []).map(Number), accompagna: e.accompagna == null ? null : Number(e.accompagna), mio };
@@ -177,9 +200,12 @@ async function giroPromemoria() {
   const domani = n2d(d2n(ora.date) + 1), dopodomani = n2d(d2n(ora.date) + 2);
   const { data: imp } = await db.from("famiglia_impegni").select(CAMPI).eq("cancellato", false);
   const { data: ms } = await db.from("famiglia_membri").select("id,nome,tipo,utente_id");
-  const { data: us } = await db.from("famiglia_utenti").select("id");
+  const { data: us } = await db.from("famiglia_utenti").select("id,famiglia_id");
   const membri = new Map<number, any>((ms || []).map((m: any) => [Number(m.id), m]));
-  const tutti = (us || []).map((u: any) => Number(u.id));
+  // Gli account di ogni famiglia: i messaggi "a tutti" restano dentro la famiglia
+  const perFam = new Map<number, number[]>();
+  for (const u of us || []) { const f = Number(u.famiglia_id); perFam.set(f, [...(perFam.get(f) || []), Number(u.id)]); }
+  const tuttiDi = (e: any) => perFam.get(Number(e.famiglia_id)) || [];
   let inviati = 0;
 
   // 1) Promemoria dei singoli impegni (senza ora: alle 9 del giorno, meno l'anticipo scelto)
@@ -191,20 +217,21 @@ async function giroPromemoria() {
       if (!(await unaVolta(`p|${e.id}|${g}|${e.promemoria_min}`))) continue;
       const chi = nomi(e.membri || [], membri), acc = e.accompagna ? membri.get(Number(e.accompagna))?.nome : "";
       const body = [fmtGiorno(g, ora.date) + (e.ora_inizio ? " alle " + e.ora_inizio : ""), chi, e.luogo, acc ? "accompagna " + acc : ""].filter(Boolean).join(" · ");
-      inviati += await mandaA(destinatari(e, membri, tutti), { title: e.titolo, body, tag: `p-${e.id}-${g}` });
+      inviati += await mandaA(destinatari(e, membri, tuttiDi(e)), { title: e.titolo, body, tag: `p-${e.id}-${g}` });
     }
   }
 
   // 2) Alle 20: impegni di domani da accompagnare ma ancora senza nessuno
   if (ora.hm >= "20:00" && ora.hm <= "20:15" && (await unaVolta(`acc|${domani}`))) {
-    const mancanti: string[] = [];
+    const mancanti = new Map<number, string[]>(); // famiglia -> impegni senza accompagnatore
     for (const e of imp || []) {
       if (e.visibilita === "privato" || !e.da_accompagnare || e.accompagna) continue;
       const bimbi = (e.membri || []).filter((i: number) => membri.get(Number(i))?.tipo === "bambino");
       if (!bimbi.length || !occorrenze(e, domani, domani).length) continue;
-      mancanti.push((e.ora_inizio ? e.ora_inizio + " " : "") + e.titolo + " (" + nomi(bimbi, membri) + ")");
+      const f = Number(e.famiglia_id);
+      mancanti.set(f, [...(mancanti.get(f) || []), (e.ora_inizio ? e.ora_inizio + " " : "") + e.titolo + " (" + nomi(bimbi, membri) + ")"]);
     }
-    if (mancanti.length) inviati += await mandaA(tutti, { title: "Domani: chi accompagna?", body: mancanti.join(", "), tag: "acc-" + domani });
+    for (const [f, lista] of mancanti) inviati += await mandaA(perFam.get(f) || [], { title: "Domani: chi accompagna?", body: lista.join(", "), tag: "acc-" + domani });
   }
   return inviati;
 }
@@ -217,47 +244,62 @@ Deno.serve(async (req) => {
   let b: any = {};
   if (req.method === "POST") { try { b = await req.json(); } catch { b = {}; } }
   try {
-    // Giro di ogni minuto, chiamato da pg_cron con il codice segreto
+    // Giro di ogni minuto, chiamato da pg_cron con il codice di famiglia_config
     if (path === "/cron") {
-      if (!CRON_CODICE || req.headers.get("x-cron") !== CRON_CODICE) return fail("unauthorized", 401);
+      if (!(await cronValido(req))) return fail("unauthorized", 401);
       return json({ inviati: await giroPromemoria() });
     }
     if (path === "/vapid") return json({ chiave: PUSH_OK ? VAPID_PUBLIC : "" });
 
-    // Stato iniziale: serve sapere se c'è già qualcuno (il primo diventa amministratore)
+    // Invito aperto da un link: chi invita e in quale famiglia
     if (path === "/inizio") {
-      const { count } = await db.from("famiglia_utenti").select("id", { count: "exact", head: true });
       let invito = null;
       if (url.searchParams.get("invito")) {
         const l = await prendiLink(url.searchParams.get("invito")!, "invito");
-        if (l?.membro_id) { const { data: m } = await db.from("famiglia_membri").select("nome").eq("id", l.membro_id).maybeSingle(); invito = { nome: m?.nome || "" }; }
-        else if (l) invito = { nome: "" };
+        if (l) {
+          const [{ data: m }, { data: f }] = await Promise.all([
+            l.membro_id ? db.from("famiglia_membri").select("nome").eq("id", l.membro_id).maybeSingle() : Promise.resolve({ data: null }),
+            db.from("famiglia_famiglie").select("nome").eq("id", l.famiglia_id).maybeSingle(),
+          ]);
+          invito = { nome: (m as any)?.nome || "", famiglia: (f as any)?.nome || "" };
+        }
       }
-      return json({ vuota: !count, invito });
+      return json({ invito });
     }
 
-    // Registrazione: il primo utente senza invito, tutti gli altri solo con un invito
+    // Registrazione libera: senza invito si crea una nuova famiglia e se ne diventa Capofamiglia;
+    // con un invito si entra nella famiglia di chi ha invitato.
     if (path === "/registrati" && req.method === "POST") {
       if (await troppiTentativi("reg", 10)) return fail("Troppe registrazioni in poco tempo: riprova tra un quarto d'ora.", 429);
-      const username = pulisciUser(b.username), nome = testo(b.nome, 30);
-      if (!userOk(username)) return fail(MSG_USER);
+      const username = pulisciUser(b.username), nome = testo(b.nome, 30), nomeFam = testo(b.famiglia, 40);
+      if (erroreUser(username)) return fail(erroreUser(username));
       if (!pwOk(b.password)) return fail(MSG_PW);
-      const { count } = await db.from("famiglia_utenti").select("id", { count: "exact", head: true });
       let link: any = null;
-      if (count) {
-        link = b.invito ? await prendiLink(String(b.invito), "invito") : null;
-        if (!link) { await segnaTentativo("reg"); return fail("Per entrare serve un invito valido: chiedilo a chi usa già l'app.", 403); }
-      }
+      if (b.invito) {
+        link = await prendiLink(String(b.invito), "invito");
+        if (!link) { await segnaTentativo("reg"); return fail("L'invito non è valido o è scaduto: chiedine uno nuovo.", 403); }
+      } else if (!nomeFam) return fail("Scrivi il nome della famiglia, per esempio Famiglia Rossi.");
       if (!link?.membro_id && !nome) return fail("Scrivi il tuo nome.");
       const { data: esiste } = await db.from("famiglia_utenti").select("id").eq("username", username).maybeSingle();
       if (esiste) return fail("Questo nome utente è già usato: scegline un altro.");
       if (link && !(await usaLink(link.h))) return fail("Questo invito è già stato usato: chiedine uno nuovo.");
-      const { data: u, error } = await db.from("famiglia_utenti").insert({ username, pass: await hashPw(b.password), admin: !count }).select("id").single();
-      if (error) return fail(error.code === "23505" ? "Questo nome utente è già usato: scegline un altro." : error.message, error.code === "23505" ? 400 : 500);
-      if (link?.membro_id) await db.from("famiglia_membri").update({ utente_id: u.id, archiviato: false }).eq("id", link.membro_id);
-      else await db.from("famiglia_membri").insert({ nome, colore: COLORI_OK.test(b.colore) ? b.colore : "#378ADD", tipo: "adulto", utente_id: u.id });
+
+      let fid = link ? Number(link.famiglia_id) : 0;
+      if (!link) {
+        const { data: f, error: ef } = await db.from("famiglia_famiglie").insert({ nome: nomeFam }).select("id").single();
+        if (ef) return fail(ef.message, 500);
+        fid = Number(f.id);
+      }
+      const { data: u, error } = await db.from("famiglia_utenti").insert({ famiglia_id: fid, username, pass: await hashPw(b.password) }).select("id").single();
+      if (error) {
+        if (!link) await db.from("famiglia_famiglie").delete().eq("id", fid);
+        return fail(error.code === "23505" ? "Questo nome utente è già usato: scegline un altro." : error.message, error.code === "23505" ? 400 : 500);
+      }
+      if (!link) await db.from("famiglia_famiglie").update({ capo_id: u.id }).eq("id", fid);
+      if (link?.membro_id) await db.from("famiglia_membri").update({ utente_id: u.id, archiviato: false, tipo: "adulto" }).eq("id", link.membro_id).eq("famiglia_id", fid);
+      else await db.from("famiglia_membri").insert({ famiglia_id: fid, nome, colore: COLORI_OK.test(b.colore) ? b.colore : "#378ADD", tipo: "adulto", utente_id: u.id });
       await segnaTentativo("reg");
-      return json({ token: await nuovaSessione(Number(u.id)) });
+      return json({ token: await nuovaSessione(Number(u.id)), username });
     }
     // Accesso: dopo 5 password sbagliate l'utente resta bloccato 15 minuti
     if (path === "/accedi" && req.method === "POST") {
@@ -272,7 +314,7 @@ Deno.serve(async (req) => {
       await db.from("famiglia_utenti").update({ errori: 0, bloccato_fino: null }).eq("id", u.id);
       return json({ token: await nuovaSessione(Number(u.id)) });
     }
-    // Nuova password da un link generato dall'amministratore
+    // Nuova password da un link generato dal Capofamiglia (o da PannelloApp)
     if (path === "/reimposta" && req.method === "POST") {
       if (await troppiTentativi("reset", 20)) return fail("Troppi tentativi: riprova tra un quarto d'ora.", 429);
       if (!pwOk(b.password)) return fail(MSG_PW);
@@ -280,8 +322,8 @@ Deno.serve(async (req) => {
       if (!l || !l.user_id) { await segnaTentativo("reset"); return fail("Il link non è valido o è scaduto: chiedine uno nuovo."); }
       if (!(await usaLink(l.h))) return fail("Il link è già stato usato.");
       await db.from("famiglia_accessi_attivi").delete().eq("user_id", l.user_id);
-      await db.from("famiglia_utenti").update({ pass: await hashPw(b.password), errori: 0, bloccato_fino: null }).eq("id", l.user_id);
-      return json({ token: await nuovaSessione(Number(l.user_id)) });
+      const { data: u } = await db.from("famiglia_utenti").update({ pass: await hashPw(b.password), errori: 0, bloccato_fino: null }).eq("id", l.user_id).select("username").single();
+      return json({ token: await nuovaSessione(Number(l.user_id)), username: u?.username || "" });
     }
 
     // ---- Da qui serve essere entrati
@@ -289,18 +331,22 @@ Deno.serve(async (req) => {
     if (!io) return fail("Accesso scaduto: rientra con nome utente e password.", 401);
     const me = await utente(io.uid);
     if (!me) return fail("Utente non trovato.", 401);
+    const fid = me.fid; // da qui in poi tutto resta dentro questa famiglia
 
     // Tutto quello che serve all'app, già filtrato secondo la privacy
     if (path === "/dati") {
-      const [{ data: us }, { data: ms }, { data: imp }] = await Promise.all([
-        db.from("famiglia_utenti").select("id,username,admin").order("id"),
-        db.from("famiglia_membri").select("id,nome,colore,tipo,utente_id,ordine,archiviato").order("ordine").order("id"),
-        db.from("famiglia_impegni").select(CAMPI).eq("cancellato", false).order("giorno"),
+      const [{ data: us }, { data: ms }, { data: imp }, { data: fam }] = await Promise.all([
+        db.from("famiglia_utenti").select("id,username").eq("famiglia_id", fid).order("id"),
+        db.from("famiglia_membri").select("id,nome,colore,tipo,utente_id,ordine,archiviato").eq("famiglia_id", fid).order("ordine").order("id"),
+        db.from("famiglia_impegni").select(CAMPI).eq("famiglia_id", fid).eq("cancellato", false).order("giorno"),
+        db.from("famiglia_famiglie").select("capo_id").eq("id", fid).maybeSingle(),
       ]);
+      const capoId = Number(fam?.capo_id);
       const membri = (ms || []).map((m: any) => ({ ...m, id: Number(m.id), utente_id: m.utente_id == null ? null : Number(m.utente_id) }));
       return json({
-        io: { id: io.uid, username: me.username, admin: !!me.admin, membro: membri.find((m) => m.utente_id === io.uid)?.id ?? null },
-        utenti: (us || []).map((u: any) => ({ id: Number(u.id), username: u.username, admin: !!u.admin })),
+        io: { id: io.uid, username: me.username, capo: me.capo, membro: membri.find((m) => m.utente_id === io.uid)?.id ?? null },
+        famiglia: { nome: me.famiglia },
+        utenti: (us || []).map((u: any) => ({ id: Number(u.id), username: u.username, capo: Number(u.id) === capoId })),
         membri,
         impegni: (imp || []).map((e: any) => perUtente(e, io.uid)).filter(Boolean),
       });
@@ -318,7 +364,7 @@ Deno.serve(async (req) => {
       if ((oraI && !isoOra(oraI)) || (oraF && !isoOra(oraF))) return fail("Orario non valido.");
       if (oraF && !oraI) return fail("Manca l'ora di inizio.");
       if (oraI && oraF && !b.giorno_fine && oraF < oraI) return fail("L'ora di fine è prima dell'inizio.");
-      const { data: ms } = await db.from("famiglia_membri").select("id");
+      const { data: ms } = await db.from("famiglia_membri").select("id").eq("famiglia_id", fid);
       const validi = new Set((ms || []).map((m: any) => Number(m.id)));
       const membri = [...new Set((Array.isArray(b.membri) ? b.membri : []).map(Number))].filter((x) => validi.has(x));
       if (!membri.length) return fail("Scegli per chi è l'impegno.");
@@ -330,9 +376,10 @@ Deno.serve(async (req) => {
       const promemoria_min = b.promemoria_min == null || b.promemoria_min === "" ? null : Math.max(0, Math.min(10080, Math.round(Number(b.promemoria_min) || 0)));
       let visibilita = ["condiviso", "occupato", "privato"].includes(b.visibilita) ? b.visibilita : "condiviso";
 
-      const { data: prima } = await db.from("famiglia_impegni").select("creato_da,visibilita,eccezioni,cancellato").eq("id", id).maybeSingle();
+      const { data: prima } = await db.from("famiglia_impegni").select("famiglia_id,creato_da,visibilita,eccezioni,cancellato").eq("id", id).maybeSingle();
       let creato_da = io.uid, eccezioni: string[] = [];
       if (prima) {
+        if (Number(prima.famiglia_id) !== fid) return fail("Impegno non valido.", 403);
         if (prima.cancellato) return fail("Questo impegno è stato eliminato.", 410);
         const mio = Number(prima.creato_da) === io.uid;
         if (!mio && prima.visibilita !== "condiviso") return fail("Solo chi l'ha creato può modificare questo impegno.", 403);
@@ -341,7 +388,7 @@ Deno.serve(async (req) => {
         eccezioni = prima.eccezioni || [];
       }
       const riga = {
-        id, titolo, giorno: b.giorno, giorno_fine: b.giorno_fine && b.giorno_fine !== b.giorno ? b.giorno_fine : null,
+        id, famiglia_id: fid, titolo, giorno: b.giorno, giorno_fine: b.giorno_fine && b.giorno_fine !== b.giorno ? b.giorno_fine : null,
         ora_inizio: oraI, ora_fine: oraF, luogo: testo(b.luogo, 120), note: testoLungo(b.note, 2000), visibilita, creato_da,
         membri, da_accompagnare, accompagna, ripeti, giorni_sett, fino_a, eccezioni: ripeti ? eccezioni : [], promemoria_min, aggiornato: nowIso(), cancellato: false,
       };
@@ -351,7 +398,7 @@ Deno.serve(async (req) => {
     }
     // Elimina un impegno, oppure salta un solo giorno di un impegno che si ripete
     if (path === "/impegno/elimina" && req.method === "POST") {
-      const { data: e } = await db.from("famiglia_impegni").select("id,creato_da,visibilita,ripeti,eccezioni").eq("id", String(b.id || "")).maybeSingle();
+      const { data: e } = await db.from("famiglia_impegni").select("id,creato_da,visibilita,ripeti,eccezioni").eq("id", String(b.id || "")).eq("famiglia_id", fid).maybeSingle();
       if (!e) return json({ ok: true });
       if (Number(e.creato_da) !== io.uid && e.visibilita !== "condiviso") return fail("Solo chi l'ha creato può eliminare questo impegno.", 403);
       if (e.ripeti && isoData(b.solo_giorno)) {
@@ -371,26 +418,44 @@ Deno.serve(async (req) => {
         ordine: Math.round(Number(b.ordine) || 0), archiviato: !!b.archiviato,
       };
       if (b.id) {
-        const { data: m } = await db.from("famiglia_membri").select("id,utente_id").eq("id", Number(b.id)).maybeSingle();
+        const { data: m } = await db.from("famiglia_membri").select("id,utente_id").eq("id", Number(b.id)).eq("famiglia_id", fid).maybeSingle();
         if (!m) return fail("Membro non trovato.", 404);
         if (m.utente_id && riga.archiviato) return fail("Chi ha un account non si può togliere dalla famiglia.");
         if (m.utente_id) riga.tipo = "adulto";
         const { error } = await db.from("famiglia_membri").update(riga).eq("id", m.id);
         if (error) return fail(error.message, 500);
       } else {
-        const { error } = await db.from("famiglia_membri").insert(riga);
+        const { error } = await db.from("famiglia_membri").insert({ ...riga, famiglia_id: fid });
         if (error) return fail(error.message, 500);
       }
       return json({ ok: true });
     }
-    // Invito per un membro senza account (dura 7 giorni, si usa una volta)
+    // Capofamiglia: invito per un adulto senza account (dura 7 giorni, si usa una volta)
     if (path === "/invito" && req.method === "POST") {
-      const { data: m } = await db.from("famiglia_membri").select("id,nome,utente_id").eq("id", Number(b.membro_id)).maybeSingle();
+      if (!me.capo) return fail("Solo il Capofamiglia può invitare.", 403);
+      const { data: m } = await db.from("famiglia_membri").select("id,nome,tipo,utente_id").eq("id", Number(b.membro_id)).eq("famiglia_id", fid).maybeSingle();
       if (!m) return fail("Membro non trovato.", 404);
       if (m.utente_id) return fail(m.nome + " ha già un account.");
+      if (m.tipo !== "adulto") return fail("Si possono invitare solo gli adulti.");
       const codice = randTok(18);
-      await db.from("famiglia_link").insert({ h: await sha(codice), tipo: "invito", membro_id: m.id, creato_da: io.uid, scade: inMin(7 * 24 * 60) });
+      await db.from("famiglia_link").insert({ h: await sha(codice), tipo: "invito", famiglia_id: fid, membro_id: m.id, creato_da: io.uid, scade: inMin(7 * 24 * 60) });
       return json({ codice, nome: m.nome });
+    }
+    // Capofamiglia: cambia il nome della famiglia
+    if (path === "/famiglia/nome" && req.method === "POST") {
+      if (!me.capo) return fail("Solo il Capofamiglia può cambiare il nome della famiglia.", 403);
+      const nome = testo(b.nome, 40);
+      if (!nome) return fail("Scrivi il nome della famiglia.");
+      await db.from("famiglia_famiglie").update({ nome }).eq("id", fid);
+      return json({ ok: true });
+    }
+    // Capofamiglia: passa il ruolo a un altro adulto con account della stessa famiglia
+    if (path === "/capo/passa" && req.method === "POST") {
+      if (!me.capo) return fail("Solo il Capofamiglia può passare il ruolo.", 403);
+      const { data: t } = await db.from("famiglia_utenti").select("id").eq("id", Number(b.user_id)).eq("famiglia_id", fid).maybeSingle();
+      if (!t || Number(t.id) === io.uid) return fail("Scegli un altro adulto della famiglia con un account.");
+      await db.from("famiglia_famiglie").update({ capo_id: t.id }).eq("id", fid);
+      return json({ ok: true });
     }
 
     if (path === "/esci" && req.method === "POST") {
@@ -422,13 +487,13 @@ Deno.serve(async (req) => {
       return json({ inviati: await mandaA([io.uid], { title: "Famiglia", body: "Notifica di prova: funziona.", tag: "prova" }) });
     }
 
-    // Amministratore: link per una nuova password (24 ore)
-    if (path === "/admin/link-password" && req.method === "POST") {
-      if (!me.admin) return fail("Solo l'amministratore può farlo.", 403);
-      const target = await utente(Number(b.user_id));
+    // Capofamiglia: link per una nuova password di un familiare (24 ore)
+    if (path === "/capo/link-password" && req.method === "POST") {
+      if (!me.capo) return fail("Solo il Capofamiglia può farlo.", 403);
+      const { data: target } = await db.from("famiglia_utenti").select("id,username").eq("id", Number(b.user_id)).eq("famiglia_id", fid).maybeSingle();
       if (!target) return fail("Utente non trovato.", 404);
       const codice = randTok(18);
-      await db.from("famiglia_link").insert({ h: await sha(codice), tipo: "password", user_id: target.id, creato_da: io.uid, scade: inMin(24 * 60) });
+      await db.from("famiglia_link").insert({ h: await sha(codice), tipo: "password", famiglia_id: fid, user_id: target.id, creato_da: io.uid, scade: inMin(24 * 60) });
       return json({ codice, username: target.username });
     }
     return fail("Richiesta non riconosciuta.", 404);
