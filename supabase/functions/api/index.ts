@@ -130,14 +130,14 @@ function occorrenze(e: any, da: string, a: string): string[] {
 }
 
 // ---------- Privacy: cosa vede un utente di un impegno
-const CAMPI = "id,titolo,giorno,giorno_fine,ora_inizio,ora_fine,luogo,note,visibilita,creato_da,membri,accompagna,ripeti,giorni_sett,fino_a,eccezioni,promemoria_min,aggiornato";
+const CAMPI = "id,titolo,giorno,giorno_fine,ora_inizio,ora_fine,luogo,note,visibilita,creato_da,membri,da_accompagnare,accompagna,ripeti,giorni_sett,fino_a,eccezioni,promemoria_min,aggiornato";
 function perUtente(e: any, uid: number) {
   const mio = Number(e.creato_da) === uid;
   const base = { ...e, creato_da: Number(e.creato_da), membri: (e.membri || []).map(Number), accompagna: e.accompagna == null ? null : Number(e.accompagna), mio };
   if (mio || e.visibilita === "condiviso") return base;
   if (e.visibilita === "privato") return null;
   // "occupato": solo quando e per chi, nessun dettaglio
-  return { ...base, titolo: "Occupato", luogo: "", note: "", accompagna: null, promemoria_min: null };
+  return { ...base, titolo: "Occupato", luogo: "", note: "", da_accompagnare: false, accompagna: null, promemoria_min: null };
 }
 
 // ---------- Notifiche
@@ -195,11 +195,11 @@ async function giroPromemoria() {
     }
   }
 
-  // 2) Alle 20: impegni di domani dei bambini ancora senza chi accompagna
+  // 2) Alle 20: impegni di domani da accompagnare ma ancora senza nessuno
   if (ora.hm >= "20:00" && ora.hm <= "20:15" && (await unaVolta(`acc|${domani}`))) {
     const mancanti: string[] = [];
     for (const e of imp || []) {
-      if (e.visibilita === "privato" || e.accompagna) continue;
+      if (e.visibilita === "privato" || !e.da_accompagnare || e.accompagna) continue;
       const bimbi = (e.membri || []).filter((i: number) => membri.get(Number(i))?.tipo === "bambino");
       if (!bimbi.length || !occorrenze(e, domani, domani).length) continue;
       mancanti.push((e.ora_inizio ? e.ora_inizio + " " : "") + e.titolo + " (" + nomi(bimbi, membri) + ")");
@@ -322,7 +322,8 @@ Deno.serve(async (req) => {
       const validi = new Set((ms || []).map((m: any) => Number(m.id)));
       const membri = [...new Set((Array.isArray(b.membri) ? b.membri : []).map(Number))].filter((x) => validi.has(x));
       if (!membri.length) return fail("Scegli per chi è l'impegno.");
-      const accompagna = b.accompagna != null && validi.has(Number(b.accompagna)) ? Number(b.accompagna) : null;
+      const da_accompagnare = !!b.da_accompagnare;
+      const accompagna = da_accompagnare && b.accompagna != null && validi.has(Number(b.accompagna)) ? Number(b.accompagna) : null;
       const ripeti = ["", "giorno", "settimana", "mese", "anno"].includes(b.ripeti) ? b.ripeti : "";
       const giorni_sett = ripeti === "settimana" ? [...new Set((Array.isArray(b.giorni_sett) ? b.giorni_sett : []).map(Number))].filter((x) => x >= 1 && x <= 7).sort() : [];
       const fino_a = ripeti && isoData(b.fino_a) && b.fino_a >= b.giorno ? b.fino_a : null;
@@ -342,7 +343,7 @@ Deno.serve(async (req) => {
       const riga = {
         id, titolo, giorno: b.giorno, giorno_fine: b.giorno_fine && b.giorno_fine !== b.giorno ? b.giorno_fine : null,
         ora_inizio: oraI, ora_fine: oraF, luogo: testo(b.luogo, 120), note: testoLungo(b.note, 2000), visibilita, creato_da,
-        membri, accompagna, ripeti, giorni_sett, fino_a, eccezioni: ripeti ? eccezioni : [], promemoria_min, aggiornato: nowIso(), cancellato: false,
+        membri, da_accompagnare, accompagna, ripeti, giorni_sett, fino_a, eccezioni: ripeti ? eccezioni : [], promemoria_min, aggiornato: nowIso(), cancellato: false,
       };
       const { data, error } = await db.from("famiglia_impegni").upsert(riga).select(CAMPI).single();
       if (error) return fail(error.message, 500);

@@ -43,6 +43,7 @@ create table if not exists public.famiglia_impegni (
   visibilita text not null default 'condiviso' check (visibilita in ('condiviso','occupato','privato')),
   creato_da bigint not null references public.famiglia_utenti(id) on delete cascade,
   membri bigint[] not null default '{}',
+  da_accompagnare boolean not null default false,
   accompagna bigint references public.famiglia_membri(id) on delete set null,
   ripeti text not null default '' check (ripeti in ('','giorno','settimana','mese','anno')),
   giorni_sett int[] not null default '{}',
@@ -53,6 +54,8 @@ create table if not exists public.famiglia_impegni (
   aggiornato timestamptz not null default now(),
   cancellato boolean not null default false
 );
+-- Colonne aggiunte dopo la prima versione (servono se la tabella esiste già)
+alter table public.famiglia_impegni add column if not exists da_accompagnare boolean not null default false;
 create index if not exists famiglia_impegni_giorno on public.famiglia_impegni (giorno);
 
 -- Accessi attivi (uno per telefono)

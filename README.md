@@ -2,8 +2,12 @@
 
 Web app (PWA) per gli impegni della famiglia. Ogni impegno può essere condiviso, "occupato" (gli altri vedono solo l'orario) o privato. I membri possono avere un account (mamma, papà) oppure no (figli, "Famiglia", la nonna…).
 
-## Prova senza server
-Apri `sito/index.html` aggiungendo `?demo` all'indirizzo: dati finti, niente Supabase. Sei "Mamma"; Papà ha un impegno "occupato" e uno privato (che non vedi).
+## Prova sul PC (senza Supabase)
+Doppio clic su **`Prova.bat`**: si apre una finestra (lasciala aperta) e il browser su `http://localhost:8765/?demo`.
+- Dati di esempio: Mamma, Papà, Luca, Sofia, Famiglia, Nonna. Papà ha un impegno "occupato" e uno privato.
+- Quello che aggiungi resta salvato in quel browser anche dopo aver chiuso tutto.
+- In **Famiglia › Prova** puoi entrare come Mamma o come Papà, per vedere cosa vede l'altro degli impegni privati, e ricominciare da capo.
+- Le notifiche nella prova non funzionano.
 
 ## Struttura
 | File | Cosa contiene |
@@ -15,6 +19,7 @@ Apri `sito/index.html` aggiungendo `?demo` all'indirizzo: dati finti, niente Sup
 | `supabase/sql/1-tabelle.sql` | Tabelle, sicurezza, copia notturna e promemoria. Si può rieseguire senza danni. |
 | `supabase/sql/2-ripristino-LEGGERE-PRIMA.sql` | Solo emergenze: riporta membri e impegni a una copia notturna. |
 | `supabase/functions/api/index.ts` | Edge Function "api": accesso, membri, impegni (con privacy), inviti, notifiche. |
+| `Prova.bat`, `strumenti/server-locale.ps1` | Avviano la versione di prova sul PC. |
 | `SEGRETI-famiglia.txt` | Chiavi delle notifiche e codice dei promemoria. Solo su questo PC, mai nel repository. |
 
 ## Supabase (progetto `bybshobzuopcfnhrjpvg`, solo per questa app)
