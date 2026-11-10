@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Famiglia">
-<meta name="theme-color" content="#1F6F5C">
+<meta name="theme-color" content="#4FB89A">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon-192.png">
@@ -14,9 +14,9 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap">
 <title>Famiglia</title>
 <style>
-:root{--bg:#F5F3EE;--card:#fff;--ink:#1C1B19;--mute:#5E5B55;--line:#EEEBE4;--soft:#F0EDE6;--acc:#1F6F5C;--acc2:#E3F1EC;--onacc:#fff;--warn:#B3261E;--warn2:#FCEBEB;--giallo:#7A4E06;--giallo2:#FAEEDA;--grigio:#B4B2A9;--ff:Manrope,system-ui,-apple-system,"Segoe UI",sans-serif}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#141412;--card:#1F1E1B;--ink:#F2EFE8;--mute:#A9A49A;--line:#2E2C28;--soft:#2A2925;--acc:#4FB89A;--acc2:#1E3A32;--onacc:#0F1F1A;--warn:#FF8A80;--warn2:#3A1F1D;--giallo:#FAC775;--giallo2:#3A2C12;--grigio:#5F5E5A}}
-:root[data-theme="dark"]{--bg:#141412;--card:#1F1E1B;--ink:#F2EFE8;--mute:#A9A49A;--line:#2E2C28;--soft:#2A2925;--acc:#4FB89A;--acc2:#1E3A32;--onacc:#0F1F1A;--warn:#FF8A80;--warn2:#3A1F1D;--giallo:#FAC775;--giallo2:#3A2C12;--grigio:#5F5E5A}
+:root{--bg:#FFFFFF;--card:#F6F5F1;--ink:#1C1B19;--mute:#5E5B55;--line:#EAE7E0;--soft:#EFEDE7;--arancio:#E07B1F;--arancio-ink:#B4570F;--acc:#4FB89A;--acc2:#E1F5EE;--onacc:#0F1F1A;--acc-testo:#1F6F5C;--warn:#B3261E;--warn2:#FCEBEB;--giallo:#7A4E06;--giallo2:#FAEEDA;--grigio:#B4B2A9;--ff:Manrope,system-ui,-apple-system,"Segoe UI",sans-serif}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#141412;--card:#1F1E1B;--arancio:#F0A04B;--arancio-ink:#FAC775;--ink:#F2EFE8;--mute:#A9A49A;--line:#2E2C28;--soft:#2A2925;--acc:#4FB89A;--acc2:#1E3A32;--onacc:#0F1F1A;--acc-testo:#4FB89A;--warn:#FF8A80;--warn2:#3A1F1D;--giallo:#FAC775;--giallo2:#3A2C12;--grigio:#5F5E5A}}
+:root[data-theme="dark"]{--bg:#141412;--card:#1F1E1B;--arancio:#F0A04B;--arancio-ink:#FAC775;--ink:#F2EFE8;--mute:#A9A49A;--line:#2E2C28;--soft:#2A2925;--acc:#4FB89A;--acc2:#1E3A32;--onacc:#0F1F1A;--acc-testo:#4FB89A;--warn:#FF8A80;--warn2:#3A1F1D;--giallo:#FAC775;--giallo2:#3A2C12;--grigio:#5F5E5A}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.4 var(--ff)}
 button,input,select,textarea{font:inherit;color:inherit}
@@ -27,7 +27,7 @@ svg{flex:none}
 .view{max-width:560px;margin:0 auto;padding:calc(18px + env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) calc(90px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));display:flex;flex-direction:column;gap:14px}
 /* telefono in orizzontale (o schermo largo): il calendario usa tutta la larghezza */
 @media (orientation:landscape) and (min-width:640px){#vCal{max-width:1200px}}
-.top{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:48px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:48px;flex-wrap:wrap}
 .top h1{margin:0;font-size:26px;font-weight:800;letter-spacing:-.5px}
 .top .sub{display:block;font-size:13px;font-weight:600;color:var(--mute)}
 .ico{width:40px;height:40px;border-radius:20px;background:var(--card);display:flex;align-items:center;justify-content:center;flex:none}
@@ -41,10 +41,14 @@ svg{flex:none}
 .chip{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 .chip .dot{width:9px;height:9px;border-radius:50%;background:var(--c)}
 .chip.off{opacity:.45}
-.chip.on{border-color:var(--acc);background:var(--acc2);color:var(--acc)}
-.consiglio{display:flex;gap:10px;align-items:center;background:var(--acc2);color:var(--acc);border-radius:16px;padding:10px 12px;font-size:13px;font-weight:700}
+.chip.on{border-color:var(--acc);background:var(--acc2);color:var(--acc-testo)}
+.cerca{display:flex;align-items:center;gap:10px;height:44px;border-radius:14px;background:var(--card);padding:0 14px;color:var(--mute);font-size:15px;font-weight:600;width:100%;text-align:left}
+.cerca input{border:none;background:transparent;flex:1;font-size:16px;font-weight:600;color:var(--ink);min-width:0;outline:none}
+.risdata{font-size:12px;font-weight:800;color:var(--mute);margin:10px 4px 4px}
+.risdata::first-letter{text-transform:uppercase}
+.consiglio{display:flex;gap:10px;align-items:center;background:var(--acc2);color:var(--acc-testo);border-radius:16px;padding:10px 12px;font-size:13px;font-weight:700}
 .consiglio span{flex:1}
-.consiglio button{font-weight:800;font-size:13px;color:var(--acc);white-space:nowrap;padding:6px 4px}
+.consiglio button{font-weight:800;font-size:13px;color:var(--acc-testo);white-space:nowrap;padding:6px 4px}
 .nessuno{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;color:var(--mute);padding:28px 20px;font-size:14px;font-weight:600}
 .nessuno b{color:var(--ink);font-size:16px;font-weight:800}
 .avviso{display:flex;gap:10px;align-items:flex-start;background:var(--giallo2);color:var(--giallo);border-radius:16px;padding:12px 14px;font-size:14px;font-weight:700}
@@ -61,50 +65,160 @@ svg{flex:none}
 .ev .tx .manca{color:var(--warn);font-weight:800}
 .ev.occ .tx b{color:var(--mute)}
 /* calendario */
-.seg{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;background:var(--line);border-radius:14px;padding:4px}
-.seg button{height:36px;border-radius:11px;font-weight:800;font-size:13px;color:var(--mute);display:flex;align-items:center;justify-content:center;gap:6px}
-.seg button.on{background:var(--card);color:var(--ink)}
+.seg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.seg button{height:38px;border-radius:12px;font-weight:800;font-size:13px;color:var(--ink);border:1.5px solid var(--line);background:var(--bg);display:flex;align-items:center;justify-content:center;gap:6px}
+.seg button.on{background:var(--acc);border-color:var(--acc);color:var(--onacc)}
 .seg button:disabled{opacity:.6;cursor:default}
 .nav2{display:flex;align-items:center;gap:6px}
 .nav2 button{height:36px;min-width:36px;padding:0 10px;border-radius:18px;background:var(--card);font-weight:800;font-size:13px;display:flex;align-items:center;justify-content:center}
-.wk{background:var(--card);border-radius:20px;padding:10px 6px 8px;overflow:hidden}
+.wk{border:1px solid var(--line);border-radius:20px;padding:10px 6px 8px;overflow:hidden}
 .wkh,.wkt{display:grid;grid-template-columns:30px repeat(7,minmax(0,1fr));gap:2px}
 .wkh button{text-align:center;font-size:11px;font-weight:700;color:var(--mute);padding:2px 0 6px;line-height:1.2}
 .wkh button b{display:block;font-size:15px;color:var(--ink)}
 .wkh button.oggi b{color:var(--onacc);background:var(--acc);border-radius:12px;width:24px;height:24px;line-height:24px;margin:0 auto}
 .wkt{border-bottom:1px solid var(--line);padding-bottom:3px;margin-bottom:2px;min-height:4px}
 .wkt div{display:flex;flex-direction:column;gap:2px}
-.blk{display:block;width:100%;border-radius:5px;background:var(--c);color:#fff;font-size:10px;font-weight:700;padding:2px 2px;text-align:left;overflow:hidden;white-space:normal;overflow-wrap:anywhere;hyphens:auto;line-height:1.15}
+.blk{display:block;width:100%;border-radius:6px;background:color-mix(in srgb,var(--c) 18%,var(--bg));color:color-mix(in srgb,var(--c) 55%,var(--ink));border-left:3px solid var(--c);font-size:10px;font-weight:800;padding:2px 3px;text-align:left;overflow:hidden;white-space:normal;overflow-wrap:anywhere;hyphens:auto;line-height:1.15}
 .wkt .blk{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
 .seg.due{grid-template-columns:repeat(2,1fr);max-width:260px;align-self:center;width:100%}
 .seg.due button{height:30px;font-size:12px}
-.giornoh{display:flex;justify-content:space-between;align-items:baseline;margin:6px 4px -6px;font-size:14px;font-weight:800;text-transform:capitalize}
-.giornoh.oggi{color:var(--acc)}
+.giornoh{display:flex;justify-content:space-between;align-items:baseline;margin:10px 4px -4px;font-size:15px;font-weight:800}
+.giornoh.oggi{color:var(--acc-testo)}
 .libero{font-size:13px;color:var(--mute);margin:0 4px}
-.blk.occ{background:var(--grigio);color:var(--ink)}
+.blk.occ{background:transparent;border:1px dashed var(--grigio);color:var(--mute)}
 .wkb{display:grid;grid-template-columns:30px repeat(7,minmax(0,1fr));gap:2px;position:relative}
 .wkb .ore{position:relative}
 .wkb .ore span{position:absolute;right:4px;font-size:10px;font-weight:700;color:var(--mute);transform:translateY(-6px)}
-.wkb .col{position:relative;background:repeating-linear-gradient(to bottom,var(--line) 0 1px,transparent 1px var(--h))}
-.wkb .col.oggi{background-color:var(--acc2)}
+.wkb .col{position:relative;border-radius:6px;background:repeating-linear-gradient(to bottom,var(--line) 0 1px,transparent 1px var(--h))}
+.wkb .col.oggi{background-color:color-mix(in srgb,var(--acc) 8%,var(--bg))}
 .wkb .col .blk{position:absolute;white-space:normal}
-.mese{background:var(--card);border-radius:20px;padding:10px 8px}
+.mese{border:1px solid var(--line);border-radius:20px;padding:10px 8px}
 .mese .gr{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:2px}
 .mese .gr>span{text-align:center;font-size:11px;font-weight:700;color:var(--mute);padding-bottom:4px}
-.mese .gr button{min-height:54px;border-radius:10px;display:flex;flex-direction:column;align-items:center;gap:3px;padding:5px 0;font-size:14px;font-weight:700}
+.mese .gr button{min-height:58px;border-radius:12px;display:flex;flex-direction:column;align-items:center;gap:4px;padding:5px 3px;font-size:14px;font-weight:700}
 .mese .gr button.fuori{color:var(--mute);opacity:.5}
 .mese .gr button.oggi .n{background:var(--acc);color:var(--onacc);border-radius:12px;width:24px;height:24px;display:flex;align-items:center;justify-content:center}
 .mese .gr button.sel{background:var(--soft)}
-.mese .pts{display:flex;gap:2px;flex-wrap:wrap;justify-content:center;max-width:36px}
-.mese .pts i{width:6px;height:6px;border-radius:50%;background:var(--c)}
-.mese .pts em{font-style:normal;font-size:9px;color:var(--mute);line-height:6px}
+.mese .pts{display:flex;flex-direction:column;gap:2px;width:100%;max-width:34px;align-items:stretch}
+.mese .pts i{height:4px;border-radius:2px;background:var(--c)}
+.mese .pts i.occ{background:var(--grigio)}
+.mese .pts em{font-style:normal;font-size:9px;font-weight:800;color:var(--mute);line-height:9px;text-align:center}
 .leg{font-size:12px;color:var(--mute);display:flex;align-items:center;gap:6px;margin:0 4px}
 .leg i{width:12px;height:9px;border-radius:2px;background:var(--grigio);display:inline-block}
 .nuovo{width:42px;height:42px;border-radius:21px;background:var(--acc);color:var(--onacc);display:flex;align-items:center;justify-content:center;flex:none}
 .nav2 .nuovo{height:42px;min-width:42px;padding:0;border-radius:21px;background:var(--acc);margin-left:4px}
-nav.tabs{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(3,1fr);padding:6px 0 calc(6px + env(safe-area-inset-bottom,0px));z-index:6}
+nav.tabs{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(4,1fr);padding:6px 0 calc(6px + env(safe-area-inset-bottom,0px));z-index:6}
+.maiusc::first-letter{text-transform:uppercase}
+/* volti della famiglia (filtro) */
+.volti{display:flex;gap:12px;overflow-x:auto;padding:4px 2px 6px;margin:0 -16px;padding-left:16px;padding-right:16px;scrollbar-width:none}
+.volti::-webkit-scrollbar{display:none}
+.volto{display:flex;flex-direction:column;align-items:center;gap:5px;flex:none;width:52px;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+.volto .av{width:44px;height:44px;border-radius:22px;background:var(--c);color:#fff;font-size:17px;font-weight:800;display:flex;align-items:center;justify-content:center;transition:opacity .15s}
+.volto.acceso .av{box-shadow:0 0 0 2px var(--bg),0 0 0 4px var(--c)}
+.volto.spento .av{opacity:.3}
+.volto.spento small{opacity:.5}
+.volto small{font-size:11px;font-weight:700;color:var(--mute);max-width:56px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.volto .av-tutti{background:var(--soft);color:var(--ink)}
+.volto .av-io{background:var(--soft);color:var(--ink);font-size:14px}
+.volto.scelto .av-io{background:var(--ink);color:var(--bg)}
+/* schede colorate e linea del tempo */
+.sc{display:flex;gap:10px;align-items:center;width:100%;text-align:left;border-radius:16px;padding:10px 12px;background:color-mix(in srgb,var(--c) 15%,var(--bg))}
+.sc .facce{display:flex;flex:none}
+.sc .facce .av{width:30px;height:30px;border-radius:15px;background:var(--c);color:#fff;font-size:13px;font-weight:800;display:flex;align-items:center;justify-content:center}
+.sc .facce .av2{margin-left:-10px;box-shadow:0 0 0 2px color-mix(in srgb,var(--c) 15%,var(--bg))}
+.sc .tx{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
+.sc b{font-size:15px;font-weight:800;color:color-mix(in srgb,var(--c) 55%,var(--ink));display:flex;align-items:center;gap:5px}
+.sc b .ic{display:inline-flex;gap:3px;opacity:.75}
+.sc small{font-size:12.5px;font-weight:600;color:color-mix(in srgb,var(--c) 45%,var(--mute))}
+.sc .manca{color:var(--warn);font-weight:800}
+.sc .evid{color:var(--arancio-ink);font-weight:800}
+.sc.occ{background:transparent;border:1.5px dashed var(--grigio)}
+.sc.occ b{color:var(--mute);font-weight:700}
+.tuttog{display:flex;flex-direction:column;gap:6px}
+.etich{font-size:12px;font-weight:800;color:var(--mute);margin:0 4px}
+.tl{position:relative;padding-left:52px}
+.tl:before{content:"";position:absolute;left:44px;top:8px;bottom:8px;width:2px;background:var(--line);border-radius:1px}
+.it{position:relative;padding:4px 0}
+.it .h{position:absolute;left:-52px;top:15px;width:36px;text-align:right;font-size:12px;font-weight:800;color:var(--mute)}
+.it .pt{position:absolute;left:-13px;top:17px;width:10px;height:10px;border-radius:5px;background:var(--c);box-shadow:0 0 0 3px var(--bg)}
+.it.conf .pt{width:12px;height:12px;left:-14px;top:16px}
+.it.passato .sc{opacity:.5;filter:grayscale(.8)}
+.it.passato .h{opacity:.6}
+.gruppo{display:flex;flex-direction:column;gap:6px;border-radius:20px;padding:6px;border:1px solid var(--line)}
+.gruppo.conflitto{border:3px solid var(--arancio)}
+.gruppo .msg{display:flex;align-items:center;gap:6px;color:var(--arancio-ink);font-weight:800;font-size:13px;padding:3px 6px 1px}
+.adesso{position:relative;height:18px}
+.adesso .h{position:absolute;left:-52px;top:1px;width:36px;text-align:right;font-size:12px;font-weight:800;color:var(--acc-testo)}
+.adesso:before{content:"";position:absolute;left:-12px;right:0;top:8px;height:2px;background:var(--acc);border-radius:1px}
+.adesso:after{content:"";position:absolute;left:-15px;top:5px;width:8px;height:8px;border-radius:4px;background:var(--acc)}
+/* liste */
+.voce{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--line)}
+.voce:last-child{border-bottom:0}
+.spunta{width:28px;height:28px;border-radius:14px;border:2px solid var(--grigio);flex:none;display:flex;align-items:center;justify-content:center;color:var(--onacc)}
+.voce.fatta .spunta{background:var(--acc);border-color:var(--acc)}
+.voce .vt{flex:1;min-width:0;text-align:left;display:flex;flex-direction:column}
+.voce .vt b{font-size:15px;font-weight:700}
+.voce .vt small{font-size:12px;color:var(--mute);font-weight:600}
+.voce.fatta .vt b{text-decoration:line-through;color:var(--mute)}
+.voce .vt small.tardi{color:var(--warn);font-weight:800}
+.voce .faccia{width:30px;height:30px;border-radius:15px;background:var(--c);color:#fff;font-size:13px;font-weight:800;display:flex;align-items:center;justify-content:center;flex:none}
+.voce.fatta .faccia{opacity:.35}
+.lista{border:1px solid var(--line);border-radius:20px;padding:2px 14px}
+.lista .riga > span{display:flex;align-items:center;gap:10px}
+.lista .riga > span:has(small){flex-direction:column;align-items:flex-start;gap:1px}
+.lista .riga > span small{margin:0!important;font-size:12px}
+.riga .valore{font-size:17px;font-weight:800;color:var(--acc-testo);background:var(--soft);border-radius:10px;padding:4px 10px}
+/* benvenuto e come funziona */
+.benv{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;margin:0 -16px}
+.benv::-webkit-scrollbar{display:none}
+.passo-b{flex:0 0 100%;scroll-snap-align:center;padding:0 16px;display:flex;flex-direction:column;gap:10px;box-sizing:border-box}
+.passo-b h3{margin:10px 0 0;font-size:24px;font-weight:800;letter-spacing:-.3px;text-wrap:balance}
+.passo-b p{margin:0;font-size:16px;line-height:1.5;color:var(--mute)}
+.ill{min-height:200px;border-radius:24px;background:color-mix(in srgb,var(--acc) 14%,var(--bg));padding:18px;display:flex;align-items:center;justify-content:center}
+.ill.col{flex-direction:column;align-items:stretch;justify-content:center;gap:8px}
+.ill .sc{background:color-mix(in srgb,var(--c) 18%,var(--bg))}
+.ill .volto{width:56px}
+.frase-es{margin-top:14px;display:inline-flex;align-items:center;gap:8px;background:var(--bg);border-radius:14px;padding:10px 14px;font-size:14px;font-weight:700;color:var(--mute);align-self:center}
+.vis-es{display:flex;align-items:center;gap:10px;background:var(--bg);border-radius:14px;padding:10px 12px;font-size:14px;color:var(--mute)}
+.vis-es b{color:var(--ink);font-weight:800}
+.puntini{display:flex;justify-content:center;gap:6px;margin-top:4px}
+.puntini i{width:8px;height:8px;border-radius:4px;background:var(--line);transition:width .2s}
+.puntini i.on{width:22px;background:var(--acc)}
+.faq details{border-bottom:1px solid var(--line);padding:13px 0}
+.faq details:last-child{border-bottom:0}
+.faq summary{font-size:15px;font-weight:700;cursor:pointer;list-style:none;display:flex;justify-content:space-between;gap:10px}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary:after{content:"›";color:var(--mute);transition:transform .2s}
+.faq details[open] summary:after{transform:rotate(90deg)}
+.faq details p{margin:8px 0 0;font-size:14px;line-height:1.5;color:var(--mute)}
+/* rotella ore e minuti */
+.ruota{position:relative;display:flex;justify-content:center;align-items:center;gap:6px;height:200px;margin:4px 0}
+.ruota .col{height:200px;width:76px;overflow-y:scroll;scroll-snap-type:y mandatory;padding:80px 0;box-sizing:border-box;scrollbar-width:none;-webkit-mask-image:linear-gradient(to bottom,transparent,#000 30%,#000 70%,transparent);mask-image:linear-gradient(to bottom,transparent,#000 30%,#000 70%,transparent);position:relative;z-index:1}
+.ruota .col::-webkit-scrollbar{display:none}
+.ruota .col div{height:40px;line-height:40px;text-align:center;font-size:22px;font-weight:700;color:var(--mute);scroll-snap-align:center;cursor:pointer}
+.ruota .col div.su{color:var(--ink);font-size:26px;font-weight:800}
+.ruota .due-punti{font-size:26px;font-weight:800;z-index:1}
+.ruota .lente{position:absolute;left:50%;transform:translateX(-50%);top:80px;height:40px;width:190px;border-radius:12px;background:var(--soft)}
+/* membri della famiglia */
+.mbgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.mbs{display:flex;flex-direction:column;align-items:center;gap:4px;padding:16px 10px 14px;border-radius:20px;background:color-mix(in srgb,var(--c) 14%,var(--bg));text-align:center;min-width:0}
+.mbs .avg{width:60px;height:60px;border-radius:30px;background:var(--c);color:#fff;font-size:26px;font-weight:800;display:flex;align-items:center;justify-content:center;margin-bottom:4px}
+.mbs b{font-size:16px;font-weight:800;color:color-mix(in srgb,var(--c) 55%,var(--ink));max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mbs b em{font-style:normal;font-weight:600;font-size:13px}
+.mbs small{font-size:12px;font-weight:700;color:color-mix(in srgb,var(--c) 45%,var(--mute))}
+.mbs .invita{margin-top:6px;display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:800;color:var(--onacc);background:var(--acc);border-radius:12px;padding:6px 12px}
+.sug{border:1px solid var(--line);border-radius:16px;padding:4px;margin-top:-6px;display:flex;flex-direction:column}
+.sugr{display:flex;align-items:center}
+.sugn{flex:1;display:flex;align-items:center;gap:10px;text-align:left;padding:10px;border-radius:12px;font-size:15px;font-weight:700}
+.sugn svg{color:var(--acc-testo)}
+.sugn:active{background:var(--soft)}
+.sugx{width:40px;height:40px;border-radius:20px;color:var(--mute);font-size:20px;flex:none}
+.aggiungi{display:flex;gap:8px}
+.aggiungi input{flex:1;min-width:0;height:48px;border:1.5px solid var(--line);border-radius:16px;background:var(--bg);padding:0 14px;font-size:16px}
+.aggiungi input:focus{border-color:var(--acc);outline:none}
+.aggiungi button{height:48px;width:48px;border-radius:24px;background:var(--acc);color:var(--onacc);display:flex;align-items:center;justify-content:center;flex:none}
 nav.tabs button{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11px;font-weight:700;color:var(--mute);padding:6px 0}
-nav.tabs button.on{color:var(--acc)}
+nav.tabs button.on{color:var(--acc-testo)}
 /* membri */
 .mb{display:flex;align-items:center;gap:12px;width:100%;padding:12px 0;border-bottom:1px solid var(--line);text-align:left}
 .mb:last-child{border-bottom:0}
@@ -112,7 +226,7 @@ nav.tabs button.on{color:var(--acc)}
 .mb .tx{flex:1;min-width:0;display:flex;flex-direction:column}
 .mb .tx b{font-size:15px;font-weight:700}
 .mb .tx small{font-size:12px;color:var(--mute);font-weight:600}
-.pill{font-size:12px;font-weight:800;color:var(--acc);background:var(--acc2);border-radius:12px;padding:6px 10px}
+.pill{font-size:12px;font-weight:800;color:var(--acc-testo);background:var(--acc2);border-radius:12px;padding:6px 10px}
 .riga{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 0;border-bottom:1px solid var(--line);font-weight:600;font-size:15px;width:100%;text-align:left}
 .riga:last-child{border-bottom:0}
 .riga.col{flex-direction:column;align-items:stretch;gap:8px}
@@ -129,23 +243,23 @@ nav.tabs button.on{color:var(--acc)}
 .sw input:checked+span:before{transform:translateX(20px)}
 .gsett{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
 .gsett button{height:36px;border-radius:10px;background:var(--soft);font-weight:800;font-size:13px;color:var(--mute)}
-.gsett button.on{background:var(--acc2);color:var(--acc)}
+.gsett button.on{background:var(--acc2);color:var(--acc-testo)}
 .combo .cv{display:flex;align-items:center;gap:12px}
 .combo .pal{width:28px;height:28px;border-radius:14px;background:var(--c);flex:none}
 .combo #mColLista{max-height:320px;overflow-y:auto;border-top:1px solid var(--line)}
 .combo #mColLista .riga{padding:9px 0}
 .combo #mColLista small{flex:1;text-align:right;color:var(--mute);font-size:12px;font-weight:600}
-.combo .ok{color:var(--acc);font-weight:800;width:16px;text-align:right}
+.combo .ok{color:var(--acc-testo);font-weight:800;width:16px;text-align:right}
 .primary{height:54px;border-radius:18px;background:var(--acc);color:var(--onacc);font-weight:800;font-size:17px;width:100%}
 .secondo{height:48px;border-radius:16px;background:var(--card);font-weight:700;width:100%}
 .danger{height:48px;border-radius:16px;background:transparent;color:var(--warn);font-weight:700;width:100%}
 .err{color:var(--warn);font-weight:700;margin:0 4px;font-size:14px}
-.ok{color:var(--acc);font-weight:700;margin:0 4px;font-size:14px}
+.ok{color:var(--acc-testo);font-weight:700;margin:0 4px;font-size:14px}
 /* schede a tutto schermo */
 .sheet{position:fixed;inset:0;background:var(--bg);overflow-y:auto;z-index:20;-webkit-overflow-scrolling:touch}
 .sheet .wrap{max-width:560px;margin:0 auto;padding:calc(14px + env(safe-area-inset-top,0px)) 16px calc(40px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:14px}
 .sheet .top h2{margin:0;font-size:17px;font-weight:800;text-align:center;flex:1}
-.sheet .top .lnk{font-weight:800;color:var(--acc);font-size:15px;min-width:64px}
+.sheet .top .lnk{font-weight:800;color:var(--acc-testo);font-size:15px;min-width:64px}
 .sheet .top .lnk.l{color:var(--mute);text-align:left}
 .sheet .top .lnk.r{text-align:right}
 .det h3{margin:6px 0 0;font-size:24px;font-weight:800;letter-spacing:-.3px}
@@ -157,10 +271,10 @@ nav.tabs button.on{color:var(--acc)}
 .passi{display:flex;flex-direction:column;gap:12px;padding:14px 0}
 .passi h3{margin:0;font-size:14px;font-weight:800;color:var(--mute)}
 .passo{display:flex;gap:12px;align-items:flex-start;font-size:15px;font-weight:600}
-.passo .n{width:28px;height:28px;border-radius:14px;background:var(--acc2);color:var(--acc);font-weight:800;display:flex;align-items:center;justify-content:center;flex:none}
+.passo .n{width:28px;height:28px;border-radius:14px;background:var(--acc2);color:var(--acc-testo);font-weight:800;display:flex;align-items:center;justify-content:center;flex:none}
 .passo .ic-in{display:inline-flex;vertical-align:-4px;background:var(--soft);border-radius:6px;padding:2px 4px;margin:0 2px}
 .chiave{display:flex;justify-content:space-between;align-items:center;padding:14px 0;font-size:15px;font-weight:600}
-.chiave b{font-size:18px;font-weight:800;color:var(--acc)}
+.chiave b{font-size:18px;font-weight:800;color:var(--acc-testo)}
 .demo{position:fixed;top:calc(4px + env(safe-area-inset-top,0px));left:50%;transform:translateX(-50%);background:var(--giallo2);color:var(--giallo);font-size:11px;font-weight:800;padding:3px 10px;border-radius:10px;z-index:30}
 .toast{position:fixed;left:50%;bottom:calc(96px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);font-size:14px;font-weight:700;padding:10px 16px;border-radius:14px;z-index:40;max-width:90vw}
 </style>
@@ -189,6 +303,7 @@ nav.tabs button.on{color:var(--acc)}
 <!-- App -->
 <div class="view" id="vOggi" hidden></div>
 <div class="view" id="vCal" hidden></div>
+<div class="view" id="vListe" hidden></div>
 <div class="view" id="vFam" hidden></div>
 
 <nav class="tabs" id="tabs" hidden>
@@ -224,7 +339,13 @@ const IC = {
   clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>', car:'<path d="M5 16V11l2-5h10l2 5v5"/><path d="M3 16h18v3H3z"/><circle cx="7.5" cy="13" r=".5"/><circle cx="16.5" cy="13" r=".5"/>',
   bell:'<path d="M6 17V11a6 6 0 0112 0v6l2 2H4z"/><path d="M10 21h4"/>', pin:'<path d="M12 21s-7-6.5-7-12a7 7 0 0114 0c0 5.5-7 12-7 12z"/><circle cx="12" cy="9" r="2.5"/>',
   alert:'<path d="M12 3l10 18H2z"/><path d="M12 10v5M12 18v.5"/>', rep:'<path d="M4 12a8 8 0 0114-5l2 2M20 12a8 8 0 01-14 5l-2-2"/><path d="M20 4v5h-5M4 20v-5h5"/>',
+  flag:'<path d="M5 21V4"/><path d="M5 4h11l-2 4 2 4H5"/>',
+  cake:'<path d="M4 21h16v-8H4z"/><path d="M4 16c2 1.5 4 1.5 6 0s4-1.5 6 0 3 1 4 0"/><path d="M12 13V9M12 6.5v-.5"/>',
+  mic:'<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0014 0M12 18v3"/>',
+  list:'<path d="M9 6h11M9 12h11M9 18h11"/><circle cx="4.5" cy="6" r="1"/><circle cx="4.5" cy="12" r="1"/><circle cx="4.5" cy="18" r="1"/>',
+  search:'<circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/>',
   check:'<path d="M5 12.5l4.5 4.5L19 7.5"/>',
+  info:'<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/>',
   bulb:'<path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 00-4 10.5c.7.7 1 1.5 1 2.5h6c0-1 .3-1.8 1-2.5A6 6 0 0012 3z"/>',
   eyeoff:'<path d="M3 3l18 18"/><path d="M10.6 6.1A10 10 0 0112 6c5 0 9 6 9 6a17 17 0 01-2.6 3.2M6.6 7.6C4.2 9.3 3 12 3 12s4 6 9 6a9 9 0 004.3-1.1"/><path d="M9.9 9.9a3 3 0 004.2 4.2"/>',
   share:'<path d="M12 3v12M7 8l5-5 5 5"/><path d="M5 13v7h14v-7"/>', link:'<path d="M10 14a4 4 0 006 0l3-3a4 4 0 00-6-6l-1 1"/><path d="M14 10a4 4 0 00-6 0l-3 3a4 4 0 006 6l1-1"/>',
@@ -311,6 +432,17 @@ function delGiorno(g, tutti) {
   }
   return out.sort((a, b) => (a.e.ora_inizio ? 1 : 0) - (b.e.ora_inizio ? 1 : 0) || (a.s === g ? mins(a.e.ora_inizio) : 0) - (b.s === g ? mins(b.e.ora_inizio) : 0));
 }
+// Più giorni con orario: il primo giorno "18:00 →", in mezzo "tutto il giorno", l'ultimo "fino alle 20:00"
+const durata = (e) => e.giorno_fine ? Math.max(0, d2n(e.giorno_fine) - d2n(e.giorno)) : 0;
+const conOrario = (e) => !!e.ora_inizio && !e.giorno_fine; // si disegna nella griglia delle ore
+function oraRiga(e, s, g) {
+  const ultimo = addG(s, durata(e));
+  if (!e.ora_inizio) return `<small>${s === g ? 'tutto il giorno' : 'continua'}</small>`;
+  if (!durata(e)) return `${esc(e.ora_inizio)}${e.ora_fine ? `<small>${esc(e.ora_fine)}</small>` : ''}`;
+  if (g === s) return `${esc(e.ora_inizio)}<small>→ ${esc(fmt(ultimo, { weekday:'short' }))}</small>`;
+  if (g === ultimo) return `<small>fino alle</small>${esc(e.ora_fine || '')}`;
+  return '<small>tutto il giorno</small>';
+}
 function orario(e, s, g) {
   if (!e.ora_inizio) return e.giorno_fine ? 'più giorni' : 'tutto il giorno';
   if (s !== g) return 'continua';
@@ -329,8 +461,8 @@ function rigaEv(e, s, g) {
   const chi = e.membri.map((id) => membro(id)?.nome).filter(Boolean).join(', ');
   let acc = '';
   if (!occ && e.da_accompagnare) acc = e.accompagna ? `<small class="acc">${ic('car',14)} accompagna ${esc(membro(e.accompagna)?.nome || '')}</small>` : `<small class="acc manca">${ic('car',14)} chi accompagna?</small>`;
-  const icons = (e.visibilita === 'privato' ? ic('lock',14) : '') + (e.visibilita === 'occupato' ? ic('clock',14) : '') + (e.ripeti ? ic('rep',14) : '');
-  const oraTx = e.ora_inizio && s === g ? `${esc(e.ora_inizio)}${e.ora_fine ? `<small>${esc(e.ora_fine)}</small>` : ''}` : `<small>${s === g ? 'tutto il giorno' : 'continua'}</small>`;
+  const icons = (e.tipo === 'scadenza' ? ic('flag',14) : e.tipo === 'compleanno' ? ic('cake',14) : '') + (e.visibilita === 'privato' ? ic('lock',14) : '') + (e.visibilita === 'occupato' ? ic('clock',14) : '') + (e.ripeti ? ic('rep',14) : '');
+  const oraTx = oraRiga(e, s, g);
   return `<button class="ev${occ ? ' occ' : ''}" style="--c:${colore(e)}" data-ev="${e.id}" data-s="${s}">
     <span class="bar"></span><span class="ora">${oraTx}</span>
     <span class="tx"><b>${esc(e.titolo)} ${icons}</b><small>${esc(chi)}${e.luogo ? ' · ' + esc(e.luogo) : ''}</small>${acc}</span></button>`;
@@ -347,7 +479,7 @@ function filtroChips(rapidi) {
 // Avvisi: un adulto con due impegni nello stesso momento
 function avvisi(g) {
   const out = [];
-  const lista = delGiorno(g, true).filter((x) => x.e.ora_inizio && x.s === g);
+  const lista = delGiorno(g, true).filter((x) => conOrario(x.e) && x.s === g);
   for (const a of membriAttivi().filter((m) => m.tipo === 'adulto')) {
     const suoi = lista.filter((x) => x.e.membri.includes(a.id) || x.e.accompagna === a.id)
       .map((x) => ({ t: x.e.titolo, i: mins(x.e.ora_inizio), f: x.e.ora_fine ? mins(x.e.ora_fine) : mins(x.e.ora_inizio) + 60 })).sort((p, q) => p.i - q.i);
@@ -367,22 +499,118 @@ const vuotoSel = () => `<div class="nessuno">${ic('eyeoff',26)}<b>Nessuno selezi
 const btnNuovo = () => `<button class="nuovo" data-nuovo aria-label="Nuovo impegno">${ic('plus', 24)}</button>`;
 
 // ---------- Schermata Oggi
+// I volti della famiglia: fanno da filtro (tocco = mostra/nascondi, tocco lungo = solo lui)
+function volti() {
+  const attivi = membriAttivi(), io = D.io.membro;
+  const tutti = attivi.every((m) => !NASCOSTI.has(m.id));
+  const soloIo = io != null && attivi.every((m) => NASCOSTI.has(m.id) === (m.id !== io));
+  const consiglio = ls.get('famiglia-consiglio-lungo') !== 'visto'
+    ? `<div class="consiglio">${ic('bulb',18)}<span>Lo sapevi? Tieni il dito premuto su un volto per vedere solo gli impegni di quella persona.</span><button data-capito>Ho capito</button></div>` : '';
+  return consiglio + `<div class="volti">
+    <button class="volto" data-rapido="${tutti ? 'nessuno' : 'tutti'}"><span class="av av-tutti">${tutti ? ic('users', 18) : ic('eyeoff', 18)}</span><small>${tutti ? 'Tutti' : 'Nessuno'}</small></button>
+    ${io != null ? `<button class="volto${soloIo ? ' scelto' : ''}" data-rapido="io"><span class="av av-io">Io</span><small>Solo io</small></button>` : ''}
+    ${attivi.map((m) => `<button class="volto${NASCOSTI.has(m.id) ? ' spento' : ' acceso'}" data-filtro="${m.id}" style="--c:${m.colore}"><span class="av">${esc(m.nome.slice(0,1).toUpperCase())}</span><small>${esc(m.nome)}</small></button>`).join('')}
+  </div>`;
+}
+
+// Adulti presenti in due impegni (come membri o come accompagnatori)
+const adultiDi = (e) => new Set([...e.membri, e.accompagna].filter((id) => id != null && membro(id)?.tipo === 'adulto'));
+const comuni = (a, b) => { const B = adultiDi(b); return [...adultiDi(a)].filter((x) => B.has(x)); };
+const nomiDi = (ids) => { const n = ids.map((id) => membro(id)?.nome).filter(Boolean); return n.length > 1 ? n.slice(0, -1).join(', ') + ' e ' + n[n.length - 1] : n[0] || ''; };
+
+// Scheda colorata di un impegno, con il volto della persona
+function scheda(e, s, g, evid) {
+  const occ = !e.mio && e.visibilita === 'occupato';
+  const m0 = membro(e.membri[0]);
+  const c = occ ? 'var(--grigio)' : (m0?.colore || 'var(--acc)');
+  const facce = e.membri.slice(0, 2).map((id, k) => { const m = membro(id); return m ? `<span class="av${k ? ' av2' : ''}" style="--c:${m.colore}">${esc(m.nome.slice(0,1).toUpperCase())}</span>` : ''; }).join('');
+  if (occ) return `<button class="sc occ" data-ev="${e.id}" data-s="${s}"><span class="facce">${facce}</span><span class="tx"><b>${esc(nomiDi(e.membri))} ${e.membri.length > 1 ? 'sono occupati' : 'è occupato'}</b><small>${esc(e.ora_inizio && e.ora_fine && !durata(e) ? e.ora_inizio + '–' + e.ora_fine : '')}</small></span></button>`;
+  const parti = [];
+  if (durata(e)) parti.push(oraRiga(e, s, g).replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim());
+  else if (e.ora_fine) parti.push('fino alle ' + e.ora_fine);
+  if (e.membri.length > 1 || !e.membri.length) parti.push(esc(nomiDi(e.membri)));
+  if (e.da_accompagnare) parti.push(e.accompagna ? `<span class="${evid?.includes(e.accompagna) ? 'evid' : ''}">porta ${esc(membro(e.accompagna)?.nome || '')}</span>` : '<span class="manca">chi accompagna?</span>');
+  if (e.luogo) parti.push(esc(e.luogo));
+  const icone = (e.tipo === 'scadenza' ? ic('flag',13) : e.tipo === 'compleanno' ? ic('cake',13) : '') + (e.ripeti ? ic('rep',13) : '') + (e.visibilita === 'privato' ? ic('lock',13) : '') + (e.visibilita === 'occupato' ? ic('clock',13) : '');
+  return `<button class="sc" style="--c:${c}" data-ev="${e.id}" data-s="${s}"><span class="facce">${facce}</span>
+    <span class="tx"><b>${esc(e.titolo)} <span class="ic">${icone}</span></b>${parti.filter(Boolean).length ? `<small>${parti.filter(Boolean).join(' · ')}</small>` : ''}</span></button>`;
+}
+
+// La giornata come linea del tempo: tutto il giorno in cima, poi gli orari; i contemporanei in un riquadro
+function lineaDelTempo(g, conOra) {
+  const lista = delGiorno(g);
+  const tuttoG = lista.filter((x) => !conOrario(x.e) || x.s !== g);
+  const items = lista.filter((x) => conOrario(x.e) && x.s === g).map((x) => {
+    const i = mins(x.e.ora_inizio);
+    return { ...x, i, f: x.e.ora_fine ? Math.max(i + 1, mins(x.e.ora_fine)) : i + 60 };
+  }).sort((a, b) => a.i - b.i);
+  // gruppi: stessa ora di inizio, oppure sovrapposti con un adulto in comune
+  const capo = items.map((_, k) => k);
+  const radice = (k) => capo[k] === k ? k : (capo[k] = radice(capo[k]));
+  for (let a = 0; a < items.length; a++) for (let b = a + 1; b < items.length; b++) {
+    const x = items[a], y = items[b];
+    if (x.i === y.i || (x.i < y.f && y.i < x.f && comuni(x.e, y.e).length)) capo[radice(b)] = radice(a);
+  }
+  const perRadice = new Map();
+  items.forEach((it, k) => { const r = radice(k); perRadice.set(r, [...(perRadice.get(r) || []), it]); });
+  const gruppi = [...perRadice.values()].sort((p, q) => p[0].i - q[0].i);
+  const adesso = new Date(), oraMin = adesso.getHours() * 60 + adesso.getMinutes();
+  const hm = (n) => `${Math.floor(n / 60)}:${String(n % 60).padStart(2, '0')}`;
+  let html = '', oraMessa = !conOra;
+  const lineaOra = `<div class="adesso"><span class="h">ora</span></div>`;
+  for (const gr of gruppi) {
+    if (!oraMessa && gr[0].i > oraMin) { html += lineaOra; oraMessa = true; }
+    const passato = conOra && gr.every((x) => x.f <= oraMin);
+    // adulti con due impegni insieme in questo gruppo
+    const doppi = new Set();
+    for (let a = 0; a < gr.length; a++) for (let b = a + 1; b < gr.length; b++)
+      if (gr[a].i < gr[b].f && gr[b].i < gr[a].f) comuni(gr[a].e, gr[b].e).forEach((id) => doppi.add(id));
+    const conflitto = doppi.size > 0, evid = [...doppi];
+    const corpo = gr.length === 1
+      ? scheda(gr[0].e, gr[0].s, g, evid)
+      : `<div class="gruppo${conflitto ? ' conflitto' : ''}">${conflitto ? `<div class="msg">${ic('alert',15)} ${esc(nomiDi(evid))} ${doppi.size > 1 ? 'hanno' : 'ha'} due impegni insieme</div>` : ''}${gr.map((x) => scheda(x.e, x.s, g, evid)).join('')}</div>`;
+    const colPt = conflitto ? 'var(--arancio)' : gr.length > 1 ? 'var(--ink)' : (!gr[0].e.mio && gr[0].e.visibilita === 'occupato' ? 'var(--grigio)' : membro(gr[0].e.membri[0])?.colore || 'var(--acc)');
+    html += `<div class="it${passato ? ' passato' : ''}${conflitto ? ' conf' : ''}"><span class="h">${hm(gr[0].i)}</span><span class="pt" style="--c:${colPt}"></span>${corpo}</div>`;
+  }
+  if (!oraMessa && items.length) html += lineaOra;
+  return (tuttoG.length ? `<div class="tuttog"><div class="etich">Tutto il giorno</div>${tuttoG.map((x) => scheda(x.e, x.s, g)).join('')}</div>` : '') +
+    (items.length ? `<div class="tl">${html}</div>` : '') +
+    (!lista.length ? '<p class="vuoto">Niente in programma.</p>' : '');
+}
+
 function renderOggi() {
   const g = oggi(), dom = addG(g, 1);
   const io = membro(D.io.membro);
-  if (nessunoSel()) {
-    $('vOggi').innerHTML = `<div class="top"><div><h1>Oggi</h1><span class="sub">${esc(fmtLungo(g))}${io ? ' · ciao ' + esc(io.nome) : ''}</span></div>${btnNuovo()}</div>${filtroChips(true)}${vuotoSel()}`;
-    return;
-  }
-  const blocco = (d) => { const l = delGiorno(d); return l.length ? `<div class="card">${l.map((x) => rigaEv(x.e, x.s, d)).join('')}</div>` : `<p class="vuoto">Niente in programma.</p>`; };
-  $('vOggi').innerHTML = `
-    <div class="top"><div><h1>Oggi</h1><span class="sub">${esc(fmtLungo(g))}${io ? ' · ciao ' + esc(io.nome) : ''}</span></div>${btnNuovo()}</div>
-    ${filtroChips(true)}
-    ${avvisi(g).map((t) => `<div class="avviso">${ic('alert',18)}<span>${esc(t)}</span></div>`).join('')}
-    ${blocco(g)}
+  const testa = `<div class="top"><div><span class="sub">${io ? 'Ciao ' + esc(io.nome) : 'Oggi'}</span><h1 class="maiusc">${esc(fmt(g, { weekday:'long', day:'numeric', month:'long' }))}</h1></div>${btnNuovo()}</div>`;
+  if (nessunoSel()) { $('vOggi').innerHTML = testa + volti() + vuotoSel(); return; }
+  $('vOggi').innerHTML = `${testa}${volti()}
+    ${lineaDelTempo(g, true)}
     <div class="sez"><h2>Domani</h2><span class="nota">${esc(fmt(dom, { weekday:'long', day:'numeric' }))}</span></div>
-    ${avvisi(dom).map((t) => `<div class="avviso">${ic('alert',18)}<span>${esc(t)}</span></div>`).join('')}
-    ${blocco(dom)}`;
+    ${lineaDelTempo(dom, false)}
+    ${daFareOggi(g)}
+    ${inArrivo(g)}`;
+}
+// Cose da fare con una data fino a oggi e non ancora fatte
+function daFareOggi(g) {
+  const lista = (D.voci || []).filter((v) => v.lista === 'cose' && !v.fatto && v.giorno && v.giorno <= g && (!v.assegnato || !NASCOSTI.has(v.assegnato)));
+  if (!lista.length) return '';
+  return `<div class="sez"><h2>Da fare</h2><button class="lnk" style="color:var(--acc-testo);font-weight:800;font-size:14px" data-tab-vai="liste">Tutte le liste ›</button></div>
+    <div class="lista">${lista.map(rigaVoce).join('')}</div>`;
+}
+// Scadenze e compleanni dei prossimi 30 giorni (da dopodomani: oggi e domani sono già sopra)
+function inArrivo(g) {
+  const da = addG(g, 2), a = addG(g, 30), lista = [];
+  for (const e of D.impegni) {
+    if (!['scadenza', 'compleanno'].includes(e.tipo) || !visibile(e)) continue;
+    const s = occorrenze(e, da, a)[0];
+    if (s) lista.push({ e, s, n: d2n(s) - d2n(g) });
+  }
+  if (!lista.length) return '';
+  lista.sort((x, y) => x.n - y.n);
+  return `<div class="sez"><h2>In arrivo</h2><span class="nota">scadenze e compleanni</span></div>
+    <div class="card">${lista.map((x) => `<button class="ev" style="--c:${colore(x.e)}" data-ev="${x.e.id}" data-s="${x.s}"><span class="bar"></span>
+      <span class="ora">${x.n}<small>${x.n === 1 ? 'giorno' : 'giorni'}</small></span>
+      <span class="tx"><b>${esc(x.e.titolo)} ${ic(x.e.tipo === 'compleanno' ? 'cake' : 'flag', 14)}</b><small>${esc(fmt(x.s, { weekday:'long', day:'numeric', month:'long' }))}</small></span></button>`).join('')}</div>`;
 }
 
 // ---------- Schermata Calendario
@@ -395,29 +623,25 @@ function titoloCal() {
 }
 function renderCal() {
   let corpo = '';
-  if (VISTA === 'giorno') {
-    const l = delGiorno(GIORNO);
-    corpo = (avvisi(GIORNO).map((t) => `<div class="avviso">${ic('alert',18)}<span>${esc(t)}</span></div>`).join('')) +
-      (l.length ? `<div class="card">${l.map((x) => rigaEv(x.e, x.s, GIORNO)).join('')}</div>` : `<p class="vuoto">Niente in programma.</p>`);
-  } else if (VISTA === 'settimana') corpo = `<div class="seg due">${[['griglia','Griglia'],['elenco','Elenco']].map(([v,t]) => `<button data-forma="${v}" class="${FORMA === v ? 'on' : ''}">${t}</button>`).join('')}</div>` + (FORMA === 'elenco' ? settimanaElenco() : settimana());
+  if (VISTA === 'giorno') corpo = lineaDelTempo(GIORNO, GIORNO === oggi());
+  else if (VISTA === 'settimana') corpo = `<div class="seg due">${[['griglia','Griglia'],['elenco','Elenco']].map(([v,t]) => `<button data-forma="${v}" class="${FORMA === v ? 'on' : ''}">${t}</button>`).join('')}</div>` + (FORMA === 'elenco' ? settimanaElenco() : settimana());
   else corpo = mese();
   if (nessunoSel()) corpo = vuotoSel();
   $('vCal').innerHTML = `
-    <div class="top"><div><h1 style="text-transform:capitalize">${esc(titoloCal())}</h1></div>
+    <div class="top"><div><span class="sub">${VISTA === 'giorno' ? 'Giorno' : VISTA === 'settimana' ? 'Settimana' : 'Mese'}</span><h1 class="maiusc">${esc(titoloCal())}</h1></div>
       <div class="nav2"><button data-nav="-1" aria-label="Indietro">${ic('sx',18)}</button><button data-nav="0">Oggi</button><button data-nav="1" aria-label="Avanti">${ic('dx',18)}</button>${btnNuovo()}</div></div>
+    ${volti()}
     <div class="seg">${[['giorno','Giorno'],['settimana','Settimana'],['mese','Mese']].map(([v,t]) => `<button data-vista="${v}" class="${VISTA === v ? 'on' : ''}">${t}</button>`).join('')}</div>
-    ${filtroChips(true)}
-    ${corpo}
-    ${D.impegni.some((e) => !e.mio && e.visibilita === 'occupato') ? '<p class="leg"><i></i> grigio: impegno di un altro, vedi solo che è occupato</p>' : ''}`;
+    <button class="cerca" id="cApri">${ic('search',18)}<span>Cerca negli impegni</span></button>
+    ${corpo}`;
 }
-// Settimana come elenco: un giorno sotto l'altro, con titoli interi
+// Settimana come elenco: un giorno sotto l'altro, ognuno con la sua linea del tempo
 function settimanaElenco() {
   const l = lunedi(GIORNO), g0 = oggi();
   return [...Array(7)].map((_, k) => {
     const g = addG(l, k), lista = delGiorno(g);
-    const testa = `<div class="giornoh${g === g0 ? ' oggi' : ''}"><span>${esc(fmt(g, { weekday:'long', day:'numeric' }))}</span>${g === g0 ? '<span>oggi</span>' : ''}</div>`;
-    return testa + avvisi(g).map((t) => `<div class="avviso">${ic('alert',18)}<span>${esc(t)}</span></div>`).join('') +
-      (lista.length ? `<div class="card">${lista.map((x) => rigaEv(x.e, x.s, g)).join('')}</div>` : '<p class="libero">Libero</p>');
+    const testa = `<div class="giornoh${g === g0 ? ' oggi' : ''}"><span class="maiusc">${esc(fmt(g, { weekday:'long', day:'numeric' }))}</span>${g === g0 ? '<span>oggi</span>' : ''}</div>`;
+    return testa + (lista.length ? lineaDelTempo(g, g === g0) : '<p class="libero">Libero</p>');
   }).join('');
 }
 function settimana() {
@@ -425,17 +649,17 @@ function settimana() {
   const H = 42; // altezza di un'ora: c'è posto per 3 righe di titolo
   const evs = giorni.map((g) => delGiorno(g));
   let inizio = 8 * 60, fine = 21 * 60;
-  for (let k = 0; k < 7; k++) for (const x of evs[k]) if (x.e.ora_inizio && x.s === giorni[k]) {
+  for (let k = 0; k < 7; k++) for (const x of evs[k]) if (conOrario(x.e) && x.s === giorni[k]) {
     inizio = Math.min(inizio, Math.floor(mins(x.e.ora_inizio) / 60) * 60);
     fine = Math.max(fine, Math.ceil((x.e.ora_fine ? mins(x.e.ora_fine) : mins(x.e.ora_inizio) + 60) / 60) * 60);
   }
   fine = Math.min(fine, 24 * 60);
   const px = (m) => (m - inizio) / 60 * H;
   const testa = giorni.map((g, k) => `<button data-giorno="${g}" class="${g === g0 ? 'oggi' : ''}">${GSETT[k]}<b>${Number(g.slice(8))}</b></button>`).join('');
-  const tuttoG = giorni.map((g, k) => `<div>${evs[k].filter((x) => !x.e.ora_inizio || x.s !== g).map((x) => `<button class="blk${!x.e.mio && x.e.visibilita === 'occupato' ? ' occ' : ''}" style="--c:${colore(x.e)}" data-ev="${x.e.id}" data-s="${x.s}">${esc(x.e.titolo)}</button>`).join('')}</div>`).join('');
+  const tuttoG = giorni.map((g, k) => `<div>${evs[k].filter((x) => !conOrario(x.e) || x.s !== g).map((x) => `<button class="blk${!x.e.mio && x.e.visibilita === 'occupato' ? ' occ' : ''}" style="--c:${colore(x.e)}" data-ev="${x.e.id}" data-s="${x.s}">${x.e.ora_inizio && x.s === g ? esc(x.e.ora_inizio) + ' ' : ''}${esc(x.e.titolo)}</button>`).join('')}</div>`).join('');
   const ore = []; for (let m = inizio; m < fine; m += 60) ore.push(`<span style="top:${px(m)}px">${m / 60}</span>`);
   const colonne = giorni.map((g, k) => {
-    const lista = evs[k].filter((x) => x.e.ora_inizio && x.s === g).map((x) => ({ x, i: mins(x.e.ora_inizio), f: Math.max(mins(x.e.ora_inizio) + 30, x.e.ora_fine ? mins(x.e.ora_fine) : mins(x.e.ora_inizio) + 60) }));
+    const lista = evs[k].filter((x) => conOrario(x.e) && x.s === g).map((x) => ({ x, i: mins(x.e.ora_inizio), f: Math.max(mins(x.e.ora_inizio) + 30, x.e.ora_fine ? mins(x.e.ora_fine) : mins(x.e.ora_inizio) + 60) }));
     // impegni sovrapposti affiancati
     lista.sort((p, q) => p.i - q.i);
     let gruppo = [], corsie = [], fineGr = -1;
@@ -459,51 +683,288 @@ function mese() {
   for (let k = 0; k < totale; k++) {
     const g = addG(l, k);
     const evs = delGiorno(g);
-    const pts = evs.slice(0, 6).map((x) => `<i style="--c:${colore(x.e)}"></i>`).join('') + (evs.length > 6 ? '<em>+</em>' : '');
+    // fino a 3 trattini colorati (uno per impegno), poi "+n"
+    const pts = evs.slice(0, 3).map((x) => `<i class="${!x.e.mio && x.e.visibilita === 'occupato' ? 'occ' : ''}" style="--c:${colore(x.e)}"></i>`).join('') + (evs.length > 3 ? `<em>+${evs.length - 3}</em>` : '');
     celle.push(`<button data-giorno="${g}" class="${Number(g.slice(5,7)) !== m ? 'fuori' : ''}${g === g0 ? ' oggi' : ''}${g === GIORNO ? ' sel' : ''}"><span class="n">${Number(g.slice(8))}</span><span class="pts">${pts}</span></button>`);
   }
-  const l2 = delGiorno(GIORNO);
   return `<div class="mese"><div class="gr">${GSETT.map((x) => `<span>${x}</span>`).join('')}${celle.join('')}</div></div>
-    <div class="sez"><h2 style="text-transform:capitalize">${esc(fmtLungo(GIORNO))}</h2></div>
-    ${l2.length ? `<div class="card">${l2.map((x) => rigaEv(x.e, x.s, GIORNO)).join('')}</div>` : '<p class="vuoto">Niente in programma.</p>'}`;
+    <div class="sez"><h2 class="maiusc">${esc(fmtLungo(GIORNO))}</h2></div>
+    ${lineaDelTempo(GIORNO, GIORNO === g0)}`;
 }
 
 // ---------- Schermata Famiglia
 const TIPI = { adulto: 'Adulto', bambino: 'Bambino', gruppo: 'Gruppo' };
+// I membri come schede colorate con il volto grande; gestione e impostazioni in schermate a parte
 function renderFam() {
   const io = D.io;
-  const righe = (D.membri.filter((m) => !m.archiviato)).map((m) => {
+  const capo = D.utenti.find((u) => u.capo);
+  const schede = D.membri.filter((m) => !m.archiviato).map((m) => {
     const u = m.utente_id ? D.utenti.find((x) => x.id === m.utente_id) : null;
-    const stato = u ? `ha l'account · ${esc(u.username)}${u.capo ? ' · Capofamiglia' : ''}` : (m.tipo === 'adulto' ? 'senza account' : TIPI[m.tipo]);
-    const azione = io.capo && !u && m.tipo === 'adulto' ? `<span class="pill" data-invita="${m.id}">Invita</span>` : '';
-    return `<button class="mb" data-membro="${m.id}"><span class="av" style="--c:${m.colore}">${esc(m.nome.slice(0,1).toUpperCase())}</span><span class="tx"><b>${esc(m.nome)}${m.id === io.membro ? ' (tu)' : ''}</b><small>${stato}</small></span>${azione}</button>`;
+    const ruolo = u?.capo ? 'Capofamiglia' : u ? 'ha l\'account' : m.tipo === 'adulto' ? 'senza account' : TIPI[m.tipo];
+    const invita = io.capo && !u && m.tipo === 'adulto' ? `<span class="invita" data-invita="${m.id}">${ic('share', 14)} Invita</span>` : '';
+    return `<button class="mbs" style="--c:${m.colore}" data-membro="${m.id}"><span class="avg">${esc(m.nome.slice(0,1).toUpperCase())}</span>
+      <b>${esc(m.nome)}${m.id === io.membro ? ' <em>(tu)</em>' : ''}</b><small>${esc(ruolo)}</small>${invita}</button>`;
   }).join('');
   const archiviati = D.membri.filter((m) => m.archiviato);
   $('vFam').innerHTML = `
-    <div class="top"><div><h1>${esc(D.famiglia?.nome || 'Famiglia')}</h1><span class="sub">${io.capo ? 'Sei il Capofamiglia' : 'Capofamiglia: ' + esc(nomeUtente(D.utenti.find((u) => u.capo)?.id))}</span></div><button class="nuovo" id="fAgg" aria-label="Aggiungi membro">${ic('plus', 24)}</button></div>
-    <div class="card">${righe || '<p class="vuoto">Aggiungi i membri della famiglia.</p>'}</div>
-    <p class="nota">I bambini e i gruppi (per esempio "Famiglia" o il cane) hanno impegni ma non un account. ${io.capo ? 'Un adulto senza account si può invitare: riceve un link per entrare.' : 'Per dare un account a un adulto chiedi al Capofamiglia di invitarlo.'}</p>
-    ${io.capo ? `<div class="sez"><h2>Capofamiglia</h2></div>
-    <div class="card">
-      <button class="riga" id="fNomeFam">Nome della famiglia <span class="lb">${esc(D.famiglia?.nome || '')} ›</span></button>
-      ${D.utenti.filter((u) => u.id !== io.id).map((u) => `<button class="riga" data-reset="${u.id}"><span>${esc(nomeUtente(u.id))} <small>${esc(u.username)}</small></span><span class="lb">link nuova password ›</span></button>`).join('')}
-      ${D.utenti.length > 1 ? '<button class="riga" id="fPassaCapo">Passa il ruolo di Capofamiglia <span class="lb">›</span></button>' : ''}
-    </div>` : ''}
-    ${archiviati.length ? `<div class="sez"><h2>Tolti</h2></div><div class="card">${archiviati.map((m) => `<button class="mb" data-membro="${m.id}"><span class="av" style="--c:${m.colore}">${esc(m.nome.slice(0,1))}</span><span class="tx"><b>${esc(m.nome)}</b><small>tocca per rimetterlo</small></span></button>`).join('')}</div>` : ''}
-    <div class="sez"><h2>Questo telefono</h2></div>
-    <div class="card">
-      <div class="riga"><span>Notifiche<small id="nStato" style="display:block;margin:0"></small></span><label class="sw"><input type="checkbox" id="nSw"><span></span></label></div>
+    <div class="top"><div><span class="sub">${io.capo ? 'Sei il Capofamiglia' : capo ? 'Capofamiglia: ' + esc(nomeUtente(capo.id)) : 'La tua famiglia'}</span><h1>${esc(D.famiglia?.nome || 'Famiglia')}</h1></div><button class="nuovo" id="fAgg" aria-label="Aggiungi membro">${ic('plus', 24)}</button></div>
+    <div class="mbgrid">${schede}</div>
+    <p class="nota">Tocca una persona per cambiare nome, colore o tipo. ${io.capo ? 'Gli adulti senza account si possono invitare.' : 'Per dare un account a un adulto chiedi al Capofamiglia di invitarlo.'}</p>
+    ${archiviati.length ? `<div class="sez"><h2>Tolti dalla famiglia</h2></div><div class="lista">${archiviati.map((m) => `<button class="mb" data-membro="${m.id}"><span class="av" style="--c:${m.colore}">${esc(m.nome.slice(0,1))}</span><span class="tx"><b>${esc(m.nome)}</b><small>tocca per rimetterlo</small></span></button>`).join('')}</div>` : ''}
+    <div class="lista">
+      ${io.capo ? `<button class="riga" id="fGestione"><span>${ic('users', 18)} Gestione della famiglia</span><span class="lb">›</span></button>` : ''}
+      <button class="riga" id="fImpostazioni"><span>${ic('bell', 18)} Impostazioni</span><span class="lb">notifiche, password ›</span></button>
+      <button class="riga" id="fComeFunziona"><span>${ic('info', 18)} Come funziona l'app</span><span class="lb">›</span></button>
+    </div>
+    ${DEMO ? `<div class="sez"><h2>Prova</h2></div>
+    <p class="nota">Stai usando la versione di prova: i dati restano solo in questo browser. Entra come un altro per vedere cosa vede degli impegni privati.</p>
+    <div class="seg" style="grid-template-columns:repeat(${D.utenti.length},1fr)">${D.utenti.map((u) => `<button data-provacome="${u.id}" class="${u.id === io.id ? 'on' : ''}">${esc(nomeUtente(u.id))}</button>`).join('')}</div>
+    <button class="secondo" id="fRicomincia">Ricomincia la prova da capo</button>` : ''}
+    <p class="nota" style="text-align:center">Entrato come ${esc(io.username)} · versione ${VERSIONE}</p>`;
+}
+// ---------- Benvenuto (alla prima apertura) e "Come funziona"
+const PASSI_BENVENUTO = [
+  { titolo: 'Tutta la famiglia in un colpo d\'occhio', testo: 'In "Oggi" vedi gli impegni di oggi e domani di tutti, ognuno col suo colore, e chi accompagna chi.',
+    disegno: () => `<div class="ill col">
+      <div class="sc" style="--c:#1D9E75"><span class="tx"><b>16:30 Calcio</b><small>porta Papà</small></span></div>
+      <div class="sc" style="--c:#BA7517"><span class="tx"><b>17:00 Danza</b><small><span class="manca">chi accompagna?</span></small></span></div>
+      <div class="sc" style="--c:#7F77DD"><span class="tx"><b>20:00 Cena dai nonni</b></span></div></div>` },
+  { titolo: 'Scegli chi vedere', testo: 'Tocca un volto per mostrarlo o nasconderlo. Tienilo premuto per vedere solo i suoi impegni.',
+    disegno: () => `<div class="ill"><div class="volti" style="margin:0;padding:6px;justify-content:center">${[['M','#D4537E',1],['P','#378ADD',1],['L','#1D9E75',1],['S','#BA7517',0]].map(([n,c,on]) => `<span class="volto ${on ? 'acceso' : 'spento'}" style="--c:${c}"><span class="av">${n}</span></span>`).join('')}</div></div>` },
+  { titolo: 'Aggiungi in un attimo', testo: 'Tocca + per un nuovo impegno. Puoi anche dettarlo: l\'app compila tutto e tu controlli prima di salvare.',
+    disegno: () => `<div class="ill col" style="align-items:center"><span class="nuovo" style="width:52px;height:52px;border-radius:26px">${ic('plus', 28)}</span>
+      <span class="frase-es">${ic('mic', 16)} «dentista Luca martedì alle 17»</span></div>` },
+  { titolo: 'Decidi tu chi vede cosa', testo: 'Ogni impegno può essere condiviso, "occupato" oppure solo tuo.',
+    disegno: () => `<div class="ill col">${[['users','Tutti','lo vede tutta la famiglia'],['clock','Occupato','gli altri vedono solo l\'orario'],['lock','Solo io','non lo vede nessun altro']].map(([i,t,s]) => `<div class="vis-es">${ic(i, 18)}<span><b>${t}</b> ${s}</span></div>`).join('')}</div>` },
+];
+let benvenutoMostrato = false;
+function apriBenvenuto() {
+  benvenutoMostrato = true;
+  const n = PASSI_BENVENUTO.length;
+  apriScheda(`
+    <div class="top"><span class="lnk"></span><h2></h2><button class="lnk r" id="bSalta">Salta</button></div>
+    <div class="benv" id="bScorri">${PASSI_BENVENUTO.map((p) => `<section class="passo-b">${p.disegno()}<h3>${esc(p.titolo)}</h3><p>${esc(p.testo)}</p></section>`).join('')}</div>
+    <div class="puntini" id="bPunti">${PASSI_BENVENUTO.map((_, k) => `<i class="${k ? '' : 'on'}"></i>`).join('')}</div>
+    <button class="primary" id="bAvanti">Avanti</button>`);
+  const sc = $('bScorri');
+  const pagina = () => Math.round(sc.scrollLeft / sc.clientWidth);
+  const aggiorna = () => { const k = pagina(); [...$('bPunti').children].forEach((d, i) => d.classList.toggle('on', i === k)); $('bAvanti').textContent = k === n - 1 ? 'Inizia' : 'Avanti'; $('bSalta').style.visibility = k === n - 1 ? 'hidden' : ''; };
+  sc.addEventListener('scroll', aggiorna, { passive: true });
+  const fine = () => { ls.set('famiglia-benvenuto', 'visto'); chiudiScheda(); };
+  // scorre con dolcezza; se il browser non lo fa (alcuni lo bloccano), salta direttamente
+  const vaiA = (k) => { const x = k * sc.clientWidth; sc.scrollTo({ left: x, behavior: 'smooth' }); setTimeout(() => { if (Math.abs(sc.scrollLeft - x) > 4) { sc.scrollLeft = x; aggiorna(); } }, 450); };
+  $('bAvanti').onclick = () => { const k = pagina(); if (k >= n - 1) fine(); else vaiA(k + 1); };
+  $('bSalta').onclick = fine;
+}
+const DOMANDE = [
+  ['Come invito un familiare?', 'Solo il Capofamiglia può invitare. In Famiglia aggiungi la persona come Adulto, se non c\'è già, e tocca "Invita" sulla sua scheda: ottieni un link da mandare con WhatsApp o email. Vale 7 giorni; aprendolo, la persona sceglie nome utente e password.'],
+  ['Cosa vuol dire "Occupato"?', 'È un impegno che gli altri vedono solo come orario: sanno che sei impegnato, ma non ne vedono titolo, luogo e note. Utile per il lavoro o per preparare una sorpresa.'],
+  ['Cosa vuol dire il riquadro arancione?', 'Una persona ha due impegni nello stesso momento, anche come accompagnatore. Per esempio Papà deve portare Luca a calcio ma ha anche il dentista.'],
+  ['A cosa servono le Liste?', 'Spesa: aggiungi i prodotti e spuntali quando li metti nel carrello. Cose da fare: scrivi un\'attività, scegli chi la deve fare e per quando. Le liste le vede e le aggiorna tutta la famiglia; mentre scrivi, l\'app ti propone quello che avete già usato.'],
+  ['Come funziona il riepilogo serale?', 'All\'ora che scegli (di base le 20) ricevi una notifica con gli impegni di domani. Se scegli un orario di mattina, ricevi quelli del giorno stesso. Si regola o si spegne in Famiglia › Impostazioni.'],
+  ['Perché non mi arrivano le notifiche?', 'Su iPhone arrivano solo se l\'app è sulla schermata Home e la apri dall\'icona. Poi attivale in Famiglia › Impostazioni, su ogni telefono. Puoi provare con "Manda una notifica di prova".'],
+  ['Come la metto sulla schermata Home?', 'iPhone: apri il sito con Safari, tocca Condividi e poi "Aggiungi alla schermata Home". Android: apri il sito con Chrome, tocca ⋮ e poi "Installa app".'],
+  ['Chi è il Capofamiglia?', 'È chi ha creato la famiglia. Può invitare gli adulti, creare i link per una nuova password, cambiare il nome della famiglia e passare il ruolo a un altro adulto. Per il resto è come gli altri.'],
+];
+function apriComeFunziona() {
+  apriScheda(`
+    <div class="top"><button class="lnk l" id="cfChiudi">Chiudi</button><h2>Come funziona</h2><span class="lnk"></span></div>
+    <button class="secondo" id="cfBenvenuto">${ic('rep', 18)} Rivedi il benvenuto</button>
+    <div class="sez"><h2>Domande frequenti</h2></div>
+    <div class="lista faq">${DOMANDE.map(([d, r]) => `<details><summary>${esc(d)}</summary><p>${esc(r)}</p></details>`).join('')}</div>`);
+  $('cfChiudi').onclick = chiudiScheda;
+  $('cfBenvenuto').onclick = apriBenvenuto;
+}
+
+// Schermata separata: impostazioni di questo account e di questo telefono
+function apriImpostazioni() {
+  const io = D.io;
+  apriScheda(`
+    <div class="top"><button class="lnk l" id="iChiudi">Chiudi</button><h2>Impostazioni</h2><span class="lnk"></span></div>
+    <div class="sez"><h2>Notifiche</h2></div>
+    <div class="lista">
+      <div class="riga"><span>Notifiche su questo telefono<small id="nStato" style="display:block;margin:0"></small></span><label class="sw"><input type="checkbox" id="nSw"><span></span></label></div>
+      <div class="riga"><span>Riepilogo degli impegni<small id="rSpiega" style="display:block;margin:0"></small></span><label class="sw"><input type="checkbox" id="rSw" ${io.riepilogo !== false ? 'checked' : ''}><span></span></label></div>
+      <button class="riga" id="rOrario" ${io.riepilogo === false ? 'hidden' : ''}><span>Orario del riepilogo</span><b class="valore" id="rOraTesto">${esc(io.riepilogo_ora || '20:00')}</b></button>
+      <div id="rRuota" hidden>
+        <div class="ruota"><div class="col" id="rH">${[...Array(24)].map((_, h) => `<div data-v="${h}">${String(h).padStart(2, '0')}</div>`).join('')}</div><span class="due-punti">:</span><div class="col" id="rM">${[...Array(12)].map((_, k) => `<div data-v="${k * 5}">${String(k * 5).padStart(2, '0')}</div>`).join('')}</div><div class="lente"></div></div>
+        <button class="primary" id="rFatto" style="height:46px;margin:6px 0 12px">Fatto</button>
+      </div>
       <button class="riga" id="nProva">Manda una notifica di prova <span class="lb">›</span></button>
+    </div>
+    <div class="sez"><h2>Account</h2></div>
+    <div class="lista">
+      <div class="riga"><span>Nome utente</span><b>${esc(io.username)}</b></div>
       <button class="riga" id="fPass">Cambia password <span class="lb">›</span></button>
       <button class="riga" id="fEsci">Esci da questo telefono <span class="lb">›</span></button>
     </div>
-    ${DEMO ? `<div class="sez"><h2>Prova</h2></div>
-    <p class="nota">Stai usando la versione di prova: i dati restano solo in questo browser. Prova a entrare come l'altro genitore per vedere cosa vede degli impegni privati.</p>
-    <div class="seg" style="grid-template-columns:repeat(${D.utenti.length},1fr)">${D.utenti.map((u) => `<button data-provacome="${u.id}" class="${u.id === io.id ? 'on' : ''}">${esc(nomeUtente(u.id))}</button>`).join('')}</div>
-    <button class="secondo" id="fRicomincia">Ricomincia la prova da capo</button>` : ''}
     <button class="danger" id="fEsciTutti">Esci da tutti i telefoni</button>
-    <p class="nota" style="text-align:center">Entrato come ${esc(io.username)} · versione ${VERSIONE}</p>`;
+    <p class="nota" style="text-align:center">Versione ${VERSIONE}</p>`);
+  $('iChiudi').onclick = chiudiScheda;
   aggiornaNotifiche();
+  // Orario del riepilogo: rotella con ore e minuti (a passi di 5)
+  const H = 40; // altezza di una riga della rotella
+  const spiega = () => {
+    const o = D.io.riepilogo_ora || '20:00', on = D.io.riepilogo !== false;
+    $('rSpiega').textContent = !on ? 'spento' : mins(o) < 12 * 60 ? `alle ${o}, gli impegni di oggi` : `alle ${o}, gli impegni di domani`;
+    $('rOrario').hidden = !on; $('rOraTesto').textContent = o;
+    if (!on) $('rRuota').hidden = true;
+  };
+  spiega();
+  const valore = (col) => Number(col.children[Math.max(0, Math.min(col.children.length - 1, Math.round(col.scrollTop / H)))].dataset.v);
+  const vai = (col, v, liscio) => { const i = [...col.children].findIndex((x) => Number(x.dataset.v) === v); col.scrollTo({ top: Math.max(0, i) * H, behavior: liscio ? 'smooth' : 'auto' }); };
+  const evidenzia = (col) => { const i = Math.round(col.scrollTop / H); [...col.children].forEach((x, k) => x.classList.toggle('su', k === i)); };
+  for (const col of [$('rH'), $('rM')]) {
+    col.addEventListener('scroll', () => evidenzia(col), { passive: true });
+    col.addEventListener('click', (ev) => { const r = ev.target.closest('[data-v]'); if (r) vai(col, Number(r.dataset.v), true); });
+  }
+  $('rOrario').onclick = () => {
+    const aperta = !$('rRuota').hidden; $('rRuota').hidden = aperta;
+    if (aperta) return;
+    const [h, m] = (D.io.riepilogo_ora || '20:00').split(':').map(Number);
+    vai($('rH'), h); vai($('rM'), Math.round(m / 5) * 5 % 60); evidenzia($('rH')); evidenzia($('rM'));
+  };
+  $('rFatto').onclick = async () => {
+    const o = String(valore($('rH'))).padStart(2, '0') + ':' + String(valore($('rM'))).padStart(2, '0');
+    D.io.riepilogo_ora = o; $('rRuota').hidden = true; spiega(); salvaCache();
+    try { await call('/impostazioni', { riepilogo_ora: o }); toast('Riepilogo alle ' + o); } catch(e) { toast(e.message); }
+  };
+  $('rSw').addEventListener('change', () => setTimeout(spiega, 0));
+}
+// Schermata separata: solo per il Capofamiglia
+function apriGestione() {
+  const io = D.io;
+  const altri = D.utenti.filter((u) => u.id !== io.id);
+  apriScheda(`
+    <div class="top"><button class="lnk l" id="gChiudi">Chiudi</button><h2>Gestione della famiglia</h2><span class="lnk"></span></div>
+    <div class="lista">
+      <button class="riga" id="fNomeFam">Nome della famiglia <span class="lb">${esc(D.famiglia?.nome || '')} ›</span></button>
+      ${altri.length ? '<button class="riga" id="fPassaCapo">Passa il ruolo di Capofamiglia <span class="lb">›</span></button>' : ''}
+    </div>
+    ${altri.length ? `<div class="sez"><h2>Password dimenticata</h2></div>
+    <p class="nota">Crea un link con cui un familiare sceglie una nuova password. Vale 24 ore, una volta sola.</p>
+    <div class="lista">${altri.map((u) => `<button class="riga" data-reset="${u.id}"><span>${esc(nomeUtente(u.id))} <small>${esc(u.username)}</small></span><span class="lb">crea il link ›</span></button>`).join('')}</div>` : ''}
+    <p class="nota">Per invitare un adulto tocca "Invita" sulla sua scheda nella pagina Famiglia.</p>`);
+  $('gChiudi').onclick = chiudiScheda;
+}
+
+// ---------- Schermata Liste: spesa e cose da fare
+let LISTA = ls.get('famiglia-lista') || 'spesa';
+let SOLO_MIEI = ls.get('famiglia-solo-miei') === '1';
+const voci = (l) => (D.voci || []).filter((v) => v.lista === l);
+function rigaVoce(v) {
+  let sotto = '', faccia = '';
+  if (v.lista === 'cose') {
+    const m = v.assegnato ? membro(v.assegnato) : null;
+    const tardi = v.giorno && !v.fatto && v.giorno < oggi();
+    const quando = v.giorno ? (v.giorno === oggi() ? 'oggi' : v.giorno === addG(oggi(), 1) ? 'domani' : fmt(v.giorno, { weekday:'short', day:'numeric', month:'short' })) : '';
+    if (m || quando) sotto = `<small class="${tardi ? 'tardi' : ''}">${esc([m?.nome, quando ? (tardi ? 'era per ' : 'per ') + quando : ''].filter(Boolean).join(' · '))}</small>`;
+    if (m) faccia = `<span class="faccia" style="--c:${m.colore}">${esc(m.nome.slice(0,1).toUpperCase())}</span>`;
+  }
+  return `<div class="voce${v.fatto ? ' fatta' : ''}"><button class="spunta" data-spunta="${v.id}" aria-label="${v.fatto ? 'Togli la spunta' : 'Fatto'}">${v.fatto ? ic('check', 16) : ''}</button>
+    <button class="vt" data-voce="${v.id}"><b>${esc(v.testo)}</b>${sotto}</button>${faccia}</div>`;
+}
+function renderListe() {
+  const io = D.io.membro;
+  let tutte = voci(LISTA);
+  if (LISTA === 'cose' && SOLO_MIEI) tutte = tutte.filter((v) => v.assegnato === io);
+  const daFare = tutte.filter((v) => !v.fatto), fatte = tutte.filter((v) => v.fatto);
+  if (LISTA === 'cose') daFare.sort((a, b) => (a.giorno || '9999').localeCompare(b.giorno || '9999'));
+  const conta = (l) => voci(l).filter((v) => !v.fatto).length;
+  $('vListe').innerHTML = `
+    <div class="top"><div><span class="sub">Le vede e le aggiorna tutta la famiglia</span><h1>Liste</h1></div></div>
+    <div class="seg" style="grid-template-columns:1fr 1fr">${[['spesa','Spesa'],['cose','Cose da fare']].map(([v,t]) => `<button data-lista="${v}" class="${LISTA === v ? 'on' : ''}">${t}${conta(v) ? ' · ' + conta(v) : ''}</button>`).join('')}</div>
+    <form class="aggiungi" id="lForm"><input id="lTesto" maxlength="120" placeholder="${LISTA === 'spesa' ? 'Aggiungi alla spesa, per esempio latte' : 'Cosa c\'è da fare?'}" autocomplete="off" autocorrect="off"><button aria-label="Aggiungi">${ic('plus', 22)}</button></form>
+    <div class="sug" id="lSug" hidden></div>
+    ${LISTA === 'cose' && io != null ? `<div class="chips"><button class="chip${SOLO_MIEI ? '' : ' on'}" data-miei="0">Tutte</button><button class="chip${SOLO_MIEI ? ' on' : ''}" data-miei="1">Solo le mie</button></div>` : ''}
+    ${daFare.length ? `<div class="lista">${daFare.map(rigaVoce).join('')}</div>` : `<p class="vuoto">${LISTA === 'spesa' ? 'La lista della spesa è vuota.' : 'Niente da fare. Tocca una voce per dire chi la deve fare e per quando.'}</p>`}
+    ${fatte.length ? `<div class="sez"><h2>${LISTA === 'spesa' ? 'Nel carrello' : 'Fatte'}</h2><button class="lnk" style="color:var(--acc-testo);font-weight:800;font-size:14px" id="lTogli">Togli le spuntate</button></div>
+    <div class="lista">${fatte.map(rigaVoce).join('')}</div>` : ''}`;
+  $('lForm').onsubmit = (ev) => { ev.preventDefault(); aggiungiVoce($('lTesto').value); };
+  $('lTesto').oninput = mostraSuggerimenti;
+}
+// Spesa: si aggiunge subito. Cose da fare: prima si sceglie chi e quando.
+function aggiungiVoce(testo) {
+  let t = String(testo || '').replace(/\s+/g, ' ').trim(); if (!t) return;
+  if (LISTA === 'cose') { apriVoce(null, t); return; }
+  t = maiuscola(t); // "latte" → "Latte"
+  const v = { id: uuid(), lista: 'spesa', testo: t, fatto: false, assegnato: null, giorno: null };
+  D.voci = [...(D.voci || []), { ...v, creato_da: D.io.id }];
+  ricordaProdotto(t, 'spesa');
+  renderListe(); setTimeout(() => $('lTesto').focus(), 0);
+  salvaVoce(v);
+}
+const maiuscola = (s) => s.charAt(0).toUpperCase() + s.slice(1);
+// Memoria di spesa e cose da fare (la stessa che tiene il server)
+function ricordaProdotto(nome, lista) {
+  const k = nome.toLowerCase();
+  const p = (D.prodotti ||= []).find((x) => (x.lista || 'spesa') === lista && x.nome.toLowerCase() === k);
+  if (p) { p.volte++; p.nome = nome; } else D.prodotti.push({ nome, volte: 1, lista });
+}
+// Suggerimenti: prima quelli che iniziano con quello che scrivi, poi quelli con una parola che inizia così;
+// i più usati in cima; non ripropone quelli già in lista e non ancora fatti
+function suggerimenti(q) {
+  const s = semplice(q).replace(/\s+/g, ' ').trim(); if (!s) return [];
+  const gia = new Set(voci(LISTA).filter((v) => !v.fatto).map((v) => semplice(v.testo)));
+  return (D.prodotti || []).filter((p) => (p.lista || 'spesa') === LISTA).map((p) => {
+    const n = semplice(p.nome);
+    const r = n.startsWith(s) ? 0 : n.split(' ').some((w) => w.startsWith(s)) ? 1 : -1;
+    return { p, r, n };
+  }).filter((x) => x.r >= 0 && !gia.has(x.n) && x.n !== s)
+    .sort((a, b) => a.r - b.r || b.p.volte - a.p.volte || a.n.localeCompare(b.n)).slice(0, 6).map((x) => x.p);
+}
+function mostraSuggerimenti() {
+  const lista = suggerimenti($('lTesto').value), box = $('lSug');
+  box.hidden = !lista.length;
+  box.innerHTML = lista.map((p) => `<div class="sugr"><button class="sugn" data-sug="${esc(p.nome)}">${ic('plus', 16)}<span>${esc(p.nome)}</span></button><button class="sugx" data-sugx="${esc(p.nome)}" aria-label="Togli ${esc(p.nome)} dai suggerimenti">×</button></div>`).join('');
+}
+async function salvaVoce(v) {
+  try { const r = await call('/voce', v); D.voci = D.voci.map((x) => x.id === v.id ? r.voce : x); salvaCache(); }
+  catch(e) { toast(e.message); carica(); }
+}
+// Scheda di una voce. Con id = null è una cosa da fare nuova (testo già scritto): si sceglie chi e quando, poi Aggiungi.
+function apriVoce(id, testoNuovo) {
+  const nuova = !id;
+  const v = nuova ? { id: uuid(), lista: 'cose', testo: testoNuovo, fatto: false, assegnato: SOLO_MIEI ? D.io.membro : null, giorno: null } : D.voci.find((x) => x.id === id);
+  if (!v) return;
+  const f = { ...v };
+  const cose = v.lista === 'cose';
+  const g0 = oggi(), dom = addG(g0, 1);
+  apriScheda(`
+    <div class="top"><button class="lnk l" id="vAnn">Annulla</button><h2>${nuova ? 'Nuova cosa da fare' : cose ? 'Cosa da fare' : 'Spesa'}</h2><button class="lnk r" id="vSalva">${nuova ? 'Aggiungi' : 'Salva'}</button></div>
+    <div class="card"><input class="big-in" id="vTesto" maxlength="120" value="${esc(v.testo)}"></div>
+    ${cose ? `<div class="sez"><h2>Chi la deve fare</h2></div>
+    <div class="chips">${membriAttivi().filter((m) => m.tipo !== 'gruppo').map((m) => `<button class="chip${f.assegnato === m.id ? ' on' : ''}" style="--c:${m.colore}" data-assegna="${m.id}"><span class="dot"></span>${esc(m.nome)}</button>`).join('')}<button class="chip${!f.assegnato ? ' on' : ''}" data-assegna="">Nessuno</button></div>
+    <div class="sez"><h2>Per quando</h2></div>
+    <div class="chips" id="vQuando">${[[g0, 'Oggi'], [dom, 'Domani'], ['', 'Nessuna data']].map(([d, t]) => `<button class="chip${(f.giorno || '') === d ? ' on' : ''}" data-quando="${d}">${t}</button>`).join('')}</div>
+    <div class="card"><label class="riga"><span>Un altro giorno</span><input type="date" id="vGiorno" value="${f.giorno || ''}"></label></div>` : ''}
+    <p class="err" id="vErr" role="alert"></p>
+    ${nuova ? '<button class="primary" id="vSalva2">Aggiungi</button>' : '<button class="danger" id="vDel">Elimina</button>'}`);
+  const evidenziaQuando = () => document.querySelectorAll('[data-quando]').forEach((b) => b.classList.toggle('on', b.dataset.quando === ($('vGiorno').value || '')));
+  $('sheetWrap').onclick = (ev) => {
+    const a = ev.target.closest('[data-assegna]');
+    if (a) { f.assegnato = a.dataset.assegna ? Number(a.dataset.assegna) : null; document.querySelectorAll('[data-assegna]').forEach((b) => b.classList.toggle('on', b === a)); }
+    const q = ev.target.closest('[data-quando]');
+    if (q) { $('vGiorno').value = q.dataset.quando; evidenziaQuando(); }
+  };
+  if (cose) $('vGiorno').onchange = evidenziaQuando;
+  $('vAnn').onclick = chiudiScheda;
+  const salva = async () => {
+    f.testo = $('vTesto').value.replace(/\s+/g, ' ').trim(); if (!f.testo) { $('vErr').textContent = 'Scrivi qualcosa.'; return; }
+    f.testo = maiuscola(f.testo); // spesa e cose da fare iniziano con la maiuscola
+    if (cose) f.giorno = $('vGiorno').value || null;
+    if (nuova) { D.voci = [...(D.voci || []), { ...f, creato_da: D.io.id }]; ricordaProdotto(f.testo, 'cose'); }
+    else D.voci = D.voci.map((x) => x.id === f.id ? f : x);
+    chiudiScheda(); render(); salvaVoce(f);
+    if (nuova) { toast('Aggiunta'); setTimeout(() => $('lTesto')?.focus(), 0); }
+  };
+  $('vSalva').onclick = salva;
+  if ($('vSalva2')) $('vSalva2').onclick = salva;
+  if (nuova) return;
+  $('vDel').onclick = async () => {
+    D.voci = D.voci.filter((x) => x.id !== id); chiudiScheda(); render();
+    try { await call('/voce/elimina', { id }); salvaCache(); } catch(e) { toast(e.message); carica(); }
+  };
 }
 
 // ---------- Rendering e navigazione
@@ -511,11 +972,13 @@ function render() {
   if (!D) return;
   $('vAccesso').hidden = true;
   $('tabs').hidden = false;
-  for (const [t, id] of [['oggi','vOggi'],['cal','vCal'],['fam','vFam']]) $(id).hidden = TAB !== t;
+  for (const [t, id] of [['oggi','vOggi'],['cal','vCal'],['liste','vListe'],['fam','vFam']]) $(id).hidden = TAB !== t;
   document.querySelectorAll('nav.tabs button').forEach((b) => b.classList.toggle('on', b.dataset.tab === TAB));
-  if (TAB === 'oggi') renderOggi(); else if (TAB === 'cal') renderCal(); else renderFam();
+  if (TAB === 'oggi') renderOggi(); else if (TAB === 'cal') renderCal(); else if (TAB === 'liste') renderListe(); else renderFam();
+  // Prima volta su questo telefono: il benvenuto
+  if (!benvenutoMostrato && ls.get('famiglia-benvenuto') !== 'visto' && $('sheet').hidden) apriBenvenuto();
 }
-$('tabs').innerHTML = `<button data-tab="oggi">${ic('home',22)}Oggi</button><button data-tab="cal">${ic('cal',22)}Calendario</button><button data-tab="fam">${ic('users',22)}Famiglia</button>`;
+$('tabs').innerHTML = `<button data-tab="oggi">${ic('home',22)}Oggi</button><button data-tab="cal">${ic('cal',22)}Calendario</button><button data-tab="liste">${ic('list',22)}Liste</button><button data-tab="fam">${ic('users',22)}Famiglia</button>`;
 $('tabs').addEventListener('click', (ev) => { const b = ev.target.closest('[data-tab]'); if (!b) return; TAB = b.dataset.tab; ls.set('famiglia-tab', TAB); render(); window.scrollTo(0, 0); });
 document.addEventListener('click', (ev) => { if (ev.target.closest('[data-nuovo]')) apriForm(null, TAB === 'cal' ? GIORNO : oggi()); });
 
@@ -560,6 +1023,37 @@ document.addEventListener('click', (ev) => {
   if (t.closest('#fAgg')) { apriMembro(null); return; }
   if (t.closest('#fPass')) { apriPassword(); return; }
   if (t.closest('#fNomeFam')) { apriNomeFamiglia(); return; }
+  if (t.closest('#fImpostazioni')) { apriImpostazioni(); return; }
+  if (t.closest('#fComeFunziona')) { apriComeFunziona(); return; }
+  if (t.closest('#fGestione')) { apriGestione(); return; }
+  if (t.closest('#cApri')) { apriRicerca(''); return; }
+  const tv = t.closest('[data-tab-vai]');
+  if (tv) { TAB = tv.dataset.tabVai; LISTA = 'cose'; ls.set('famiglia-tab', TAB); render(); window.scrollTo(0, 0); return; }
+  const li = t.closest('[data-lista]');
+  if (li) { LISTA = li.dataset.lista; ls.set('famiglia-lista', LISTA); render(); return; }
+  const mi = t.closest('[data-miei]');
+  if (mi) { SOLO_MIEI = mi.dataset.miei === '1'; ls.set('famiglia-solo-miei', SOLO_MIEI ? '1' : '0'); render(); return; }
+  const sg = t.closest('[data-sug]');
+  if (sg) { aggiungiVoce(sg.dataset.sug); return; }
+  const sx = t.closest('[data-sugx]');
+  if (sx) {
+    const nome = sx.dataset.sugx;
+    D.prodotti = (D.prodotti || []).filter((p) => !((p.lista || 'spesa') === LISTA && p.nome.toLowerCase() === nome.toLowerCase()));
+    mostraSuggerimenti(); $('lTesto').focus();
+    call('/prodotto/elimina', { nome, lista: LISTA }).then(salvaCache).catch((e) => toast(e.message));
+    return;
+  }
+  const sp = t.closest('[data-spunta]');
+  if (sp) { const v = D.voci.find((x) => x.id === sp.dataset.spunta); if (v) { v.fatto = !v.fatto; render(); salvaVoce(v); } return; }
+  const vo = t.closest('[data-voce]');
+  if (vo && !t.closest('#sheet')) { apriVoce(vo.dataset.voce); return; }
+  if (t.closest('#lTogli')) {
+    const n = voci(LISTA).filter((v) => v.fatto).length;
+    if (!confirm(`Togliere ${n} ${n === 1 ? 'voce spuntata' : 'voci spuntate'}?`)) return;
+    D.voci = D.voci.filter((v) => !(v.lista === LISTA && v.fatto)); render();
+    call('/voci/togli-fatte', { lista: LISTA }).then(salvaCache).catch((e) => { toast(e.message); carica(); });
+    return;
+  }
   if (t.closest('#fPassaCapo')) { apriPassaCapo(); return; }
   if (t.closest('#fEsci')) { if (confirm('Uscire da questo telefono?')) esci(false); return; }
   if (t.closest('#fEsciTutti')) { if (confirm('Uscire da tutti i telefoni, compreso questo?')) esci(false, true); return; }
@@ -575,16 +1069,25 @@ document.addEventListener('pointerdown', (ev) => {
 });
 for (const tipo of ['pointerup', 'pointercancel', 'pointerleave', 'scroll']) document.addEventListener(tipo, () => clearTimeout(timerLungo), true);
 document.addEventListener('contextmenu', (ev) => { if (ev.target.closest('[data-filtro]')) ev.preventDefault(); });
-document.addEventListener('change', (ev) => { if (ev.target.id === 'nSw') ev.target.checked ? attivaNotifiche() : disattivaNotifiche(); });
+document.addEventListener('change', (ev) => {
+  if (ev.target.id === 'nSw') ev.target.checked ? attivaNotifiche() : disattivaNotifiche();
+  if (ev.target.id === 'rSw') {
+    const on = ev.target.checked; D.io.riepilogo = on;
+    call('/impostazioni', { riepilogo: on }).then(() => { salvaCache(); toast(on ? 'Riepilogo serale attivo' : 'Riepilogo serale spento'); }).catch((e) => toast(e.message));
+  }
+});
 
 // ---------- Schede
-function apriScheda(html) { $('sheetWrap').innerHTML = html; $('sheet').hidden = false; $('sheet').scrollTop = 0; document.body.style.overflow = 'hidden'; }
+function apriScheda(html) { $('sheetWrap').onclick = null; $('sheetWrap').innerHTML = html; $('sheet').hidden = false; $('sheet').scrollTop = 0; document.body.style.overflow = 'hidden'; }
 function chiudiScheda() { $('sheet').hidden = true; $('sheetWrap').innerHTML = ''; document.body.style.overflow = ''; }
 
 function apriDettaglio(id, s) {
   const e = D.impegni.find((x) => x.id === id); if (!e) return;
   const occ = !e.mio && e.visibilita === 'occupato';
-  const quando = (s ? fmtLungo(s) : fmtLungo(e.giorno)) + (e.ora_inizio ? ', ' + e.ora_inizio + (e.ora_fine ? '–' + e.ora_fine : '') : e.giorno_fine ? ' – ' + fmtLungo(addG(s || e.giorno, d2n(e.giorno_fine) - d2n(e.giorno))) : ', tutto il giorno');
+  const g0 = s || e.giorno, gUltimo = addG(g0, durata(e));
+  const quando = durata(e)
+    ? fmtLungo(g0) + (e.ora_inizio ? ' alle ' + e.ora_inizio : '') + ' – ' + fmtLungo(gUltimo) + (e.ora_fine ? ' alle ' + e.ora_fine : '')
+    : fmtLungo(g0) + (e.ora_inizio ? ', ' + e.ora_inizio + (e.ora_fine ? '–' + e.ora_fine : '') : ', tutto il giorno');
   const RIP = { giorno: 'Ogni giorno', settimana: 'Ogni settimana', mese: 'Ogni mese', anno: 'Ogni anno' };
   const rip = e.ripeti ? RIP[e.ripeti] + (e.ripeti === 'settimana' && e.giorni_sett.length ? ' (' + e.giorni_sett.map((x) => ['lun','mar','mer','gio','ven','sab','dom'][x-1]).join(', ') + ')' : '') + (e.fino_a ? ' fino al ' + fmt(e.fino_a, { day:'numeric', month:'long' }) : '') : '';
   const VIS = { condiviso: [ic('users',14), 'Lo vedono tutti'], occupato: [ic('clock',14), 'Gli altri vedono solo "occupato"'], privato: [ic('lock',14), 'Lo vedi solo tu'] };
@@ -598,12 +1101,13 @@ function apriDettaglio(id, s) {
       ${rip ? `<div class="riga"><span>${ic('rep',16)} Si ripete</span><b style="text-align:right">${esc(rip)}</b></div>` : ''}
       ${e.promemoria_min != null ? `<div class="riga"><span>${ic('bell',16)} Promemoria</span><b>${esc(PROM.find((p) => String(p[0]) === String(e.promemoria_min))?.[1] || e.promemoria_min + ' min prima')}</b></div>` : ''}
       ${e.note ? `<div class="riga col"><span class="lb">Note</span><span style="white-space:pre-wrap">${esc(e.note)}</span></div>` : ''}
+      ${e.tipo === 'scadenza' || e.tipo === 'compleanno' ? `<div class="riga"><span>${ic(e.tipo === 'compleanno' ? 'cake' : 'flag', 16)} Tipo</span><b>${e.tipo === 'compleanno' ? 'Compleanno' : 'Scadenza'}</b></div>` : ''}
       <div class="riga"><span class="lb">Creato da</span><b>${esc(nomeUtente(e.creato_da))}</b></div>
     </div>
     <div><span class="badge">${e.mio || e.visibilita === 'condiviso' ? VIS[e.visibilita].join(' ') : occ ? ic('clock',14) + ' Impegno privato: vedi solo l\'orario' : ''}</span></div>
     ${puoModificare(e) ? (e.ripeti ? `<button class="secondo" id="sSalta">Togli solo questo giorno</button><button class="danger" id="sDel">Elimina tutte le volte</button>` : `<button class="danger" id="sDel">Elimina</button>`) : ''}`);
   $('sChiudi').onclick = chiudiScheda;
-  if ($('sMod')) $('sMod').onclick = () => apriForm(e, null);
+  if ($('sMod')) $('sMod').onclick = () => (e.ripeti && s ? sceltaModifica(e, s) : apriForm(e, null));
   if ($('sSalta')) $('sSalta').onclick = () => elimina(e, s);
   if ($('sDel')) $('sDel').onclick = () => { if (confirm(e.ripeti ? 'Eliminare tutte le volte di questo impegno?' : 'Eliminare questo impegno?')) elimina(e, null); };
 }
@@ -615,15 +1119,175 @@ async function elimina(e, soloGiorno) {
   } catch(err) { toast(err.message); }
 }
 
-const PROM = [['', 'Nessuno'], [0, "All'ora dell'impegno"], [10, '10 minuti prima'], [30, '30 minuti prima'], [60, '1 ora prima'], [120, '2 ore prima'], [1440, 'Il giorno prima']];
-function apriForm(e, giorno) {
+const PROM = [['', 'Nessuno'], [0, "All'ora dell'impegno"], [10, '10 minuti prima'], [30, '30 minuti prima'], [60, '1 ora prima'], [120, '2 ore prima'], [1440, 'Il giorno prima'],
+  [4320, '3 giorni prima'], [10080, '1 settimana prima'], [20160, '2 settimane prima'], [43200, '1 mese prima']];
+const TIPI_IMP = [['impegno', 'cal', 'Impegno'], ['scadenza', 'flag', 'Scadenza'], ['compleanno', 'cake', 'Compleanno']];
+// ---------- Ricerca negli impegni (titolo, luogo, note e nomi; senza badare ad accenti e maiuscole)
+const semplice = (s) => String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+function risultatiRicerca(q) {
+  const parole = semplice(q).split(/\s+/).filter(Boolean);
+  if (!parole.length) return { prossimi: [], passati: [] };
+  const g0 = oggi(), fra1anno = addG(g0, 366), ieri = addG(g0, -1), dueAnniFa = addG(g0, -730);
+  const prossimi = [], passati = [];
+  for (const e of D.impegni) {
+    const testo = semplice([e.titolo, e.luogo, e.note, ...e.membri.map((id) => membro(id)?.nome)].join(' '));
+    if (!parole.every((p) => testo.includes(p))) continue;
+    const dopo = occorrenze(e, g0, fra1anno)[0];
+    if (dopo) { prossimi.push({ e, s: dopo }); continue; }
+    const prima = occorrenze(e, dueAnniFa, ieri).pop();
+    if (prima) passati.push({ e, s: prima });
+  }
+  const ora = (x) => mins(x.e.ora_inizio);
+  prossimi.sort((a, b) => a.s.localeCompare(b.s) || ora(a) - ora(b));
+  passati.sort((a, b) => b.s.localeCompare(a.s) || ora(a) - ora(b));
+  return { prossimi: prossimi.slice(0, 40), passati: passati.slice(0, 40) };
+}
+function apriRicerca(q) {
+  apriScheda(`
+    <div class="top"><button class="lnk l" id="rChiudi">Chiudi</button><h2>Cerca</h2><span class="lnk"></span></div>
+    <label class="cerca">${ic('search',18)}<input id="rQ" type="search" placeholder="Per esempio dentista, Luca, piscina" value="${esc(q)}" autocomplete="off"></label>
+    <div id="rRis"></div>`);
+  const elenco = (lista, g0) => lista.map((x) => `<div class="risdata">${x.s === g0 ? 'oggi' : esc(fmt(x.s, { weekday:'short', day:'numeric', month:'long', year: x.s.slice(0,4) === g0.slice(0,4) ? undefined : 'numeric' }))}${x.e.ripeti ? ' · si ripete' : ''}</div><div class="card">${rigaEv(x.e, x.s, x.s)}</div>`).join('');
+  const mostra = () => {
+    const q2 = $('rQ').value, g0 = oggi();
+    if (!q2.trim()) { $('rRis').innerHTML = '<p class="vuoto">Scrivi una parola del titolo, del luogo, delle note o il nome di una persona.</p>'; return; }
+    const r = risultatiRicerca(q2);
+    $('rRis').innerHTML = !r.prossimi.length && !r.passati.length ? '<p class="vuoto">Nessun impegno trovato.</p>' :
+      (r.prossimi.length ? `<div class="sez"><h2>Prossimi</h2></div>${elenco(r.prossimi, g0)}` : '') +
+      (r.passati.length ? `<div class="sez" style="margin-top:14px"><h2>Passati</h2></div>${elenco(r.passati, g0)}` : '');
+  };
+  $('rQ').oninput = mostra; mostra();
+  $('rChiudi').onclick = chiudiScheda;
+  $('sheetWrap').onclick = (ev) => { const b = ev.target.closest('[data-ev]'); if (b) apriDettaglio(b.dataset.ev, b.dataset.s); };
+  setTimeout(() => $('rQ').focus(), 50);
+}
+
+// ---------- Frase a voce o scritta → impegno («dentista Luca martedì alle 17, accompagna papà»)
+const GIORNI_IT = ['lunedi','martedi','mercoledi','giovedi','venerdi','sabato','domenica'];
+const MESI_IT = ['gennaio','febbraio','marzo','aprile','maggio','giugno','luglio','agosto','settembre','ottobre','novembre','dicembre'];
+const PAROLE_VUOTE = new Set(['il','lo','la','i','gli','le','l','un','una','uno','di','del','della','dello','dei','degli','delle','a','al','alla','allo','ai','agli','alle','da','dal','dalla','dai','per','con','e','in','nel','nella','su','sul','alle','ore']);
+function interpretaFrase(frase, giornoBase) {
+  const O = String(frase).replace(/[,;!?]/g, ' ').trim().split(/\s+/).filter(Boolean);
+  const N = O.map((w) => semplice(w).replace(/[^a-z0-9:./]/g, ''));
+  const usati = O.map(() => false);
+  // cerca un'espressione tra le parole non ancora usate e le segna come usate
+  const cerca = (re) => {
+    const testo = N.map((w, i) => usati[i] ? '§' : w).join(' ');
+    const m = testo.match(re); if (!m) return null;
+    const i0 = testo.slice(0, m.index).split(' ').length - 1, n = m[0].split(' ').length;
+    for (let i = i0; i < i0 + n && i < usati.length; i++) usati[i] = true;
+    return m;
+  };
+  const c = (s) => s.charAt(0).toUpperCase() + s.slice(1);
+  const pre = {}, g0 = oggi();
+  let m;
+  cerca(/^(aggiungi|metti|segna|ricordami|crea|nuovo impegno|nuova)\b/);
+  // Tipo
+  const tutto = N.join(' ');
+  if (/\bcompleanno\b/.test(tutto)) { pre.tipo = 'compleanno'; pre.ripeti = 'anno'; pre.promemoria_min = 10080; }
+  else if (/\b(scadenza|scade|bollo|revisione|rinnovo|tagliando)\b/.test(tutto)) { pre.tipo = 'scadenza'; pre.promemoria_min = 10080; }
+  // Ripetizione
+  if ((m = cerca(/\bogni (lunedi|martedi|mercoledi|giovedi|venerdi|sabato|domenica)\b/))) { pre.ripeti = 'settimana'; pre.giorni_sett = [GIORNI_IT.indexOf(m[1]) + 1]; }
+  else if ((m = cerca(/\b(?:ogni|tutti i|tutte le) (giorno|giorni|settimana|settimane|mese|mesi|anno|anni)\b/))) pre.ripeti = { giorno:'giorno', giorni:'giorno', settimana:'settimana', settimane:'settimana', mese:'mese', mesi:'mese', anno:'anno', anni:'anno' }[m[1]];
+  // Accompagnamento
+  const nomi = membriAttivi().map((mb) => ({ mb, n: semplice(mb.nome) })).sort((a, b) => b.n.length - a.n.length);
+  const nomeRe = nomi.map((x) => x.n.replace(/[^a-z0-9 ]/g, '')).filter(Boolean).join('|');
+  if (nomeRe && (m = cerca(new RegExp(`\\b(?:lo |la |li |le )?(?:accompagna|accompagnano|porta|portano) (${nomeRe})\\b`)))) {
+    const x = nomi.find((y) => y.n === m[1]); if (x) { pre.da_accompagnare = true; pre.accompagna = x.mb.id; }
+  } else if (cerca(/\bda accompagnare\b/)) pre.da_accompagnare = true;
+  // Visibilità
+  if (cerca(/\b(?:privato|privata|solo per me|solo io)\b/)) pre.visibilita = 'privato';
+  else if (cerca(/\boccupato\b/)) pre.visibilita = 'occupato';
+  // Orari
+  const quarti = (x) => x === 'mezza' ? 30 : x === 'un quarto' ? 15 : x ? Number(x) : 0;
+  const hhmm = (h, mm) => String(h).padStart(2, '0') + ':' + String(mm).padStart(2, '0');
+  const pomeriggio = /\b(pomeriggio|sera|stasera)\b/.test(tutto), mattina = /\b(mattina|mattino|stamattina)\b/.test(tutto);
+  const ora = (h, mm) => { h = Number(h); if ((pomeriggio || (!mattina && h >= 1 && h <= 7)) && h < 12) h += 12; return hhmm(h % 24, mm); };
+  const T = '(\\d{1,2})(?:[:.](\\d{2}))?(?: e (mezza|un quarto|\\d{1,2}))?';
+  if ((m = cerca(new RegExp(`\\bdalle ${T} alle ${T}`)))) { pre.ora_inizio = ora(m[1], m[2] ? Number(m[2]) : quarti(m[3])); pre.ora_fine = ora(m[4], m[5] ? Number(m[5]) : quarti(m[6])); }
+  else if ((m = cerca(new RegExp(`\\b(?:alle|ore|verso le|per le) ${T}`)))) pre.ora_inizio = ora(m[1], m[2] ? Number(m[2]) : quarti(m[3]));
+  cerca(/\b(?:di |del |nel )?(?:mattina|mattino|pomeriggio|sera)\b/);
+  if (cerca(/\btutto il giorno\b/)) { pre.ora_inizio = null; pre.ora_fine = null; }
+  // Data
+  const prossimo = (dow) => { let n = d2n(g0) + 1; while (wd(n) !== dow) n++; return n2d(n); };
+  if (cerca(/\b(?:oggi|stasera|stamattina)\b/)) pre.giorno = g0;
+  else if (cerca(/\bdopodomani\b/)) pre.giorno = addG(g0, 2);
+  else if (cerca(/\bdomani\b/)) pre.giorno = addG(g0, 1);
+  else if ((m = cerca(/\b(?:(?:il|di|questo|questa|prossimo|prossima) )?(lunedi|martedi|mercoledi|giovedi|venerdi|sabato|domenica)(?: prossimo| prossima)?\b/))) pre.giorno = prossimo(GIORNI_IT.indexOf(m[1]) + 1);
+  else if ((m = cerca(new RegExp(`\\b(?:il |l )?(\\d{1,2}) (${MESI_IT.join('|')})(?: (\\d{4}))?\\b`)))) {
+    const [y0] = g0.split('-').map(Number), mese = MESI_IT.indexOf(m[2]) + 1;
+    let d = `${m[3] || y0}-${String(mese).padStart(2, '0')}-${String(m[1]).padStart(2, '0')}`;
+    if (!m[3] && d < g0) d = `${y0 + 1}${d.slice(4)}`;
+    pre.giorno = d;
+  } else if ((m = cerca(/\b(\d{1,2})\/(\d{1,2})(?:\/(\d{2,4}))?\b/))) {
+    const [y0] = g0.split('-').map(Number);
+    let y = m[3] ? (m[3].length === 2 ? 2000 + Number(m[3]) : Number(m[3])) : y0;
+    let d = `${y}-${String(m[2]).padStart(2, '0')}-${String(m[1]).padStart(2, '0')}`;
+    if (!m[3] && d < g0) d = `${y0 + 1}${d.slice(4)}`;
+    pre.giorno = d;
+  } else if ((m = cerca(/\bil (\d{1,2})\b/))) {
+    const [y0, m0] = g0.split('-').map(Number);
+    let d = `${y0}-${String(m0).padStart(2, '0')}-${String(m[1]).padStart(2, '0')}`;
+    if (d < g0) { const nm = new Date(Date.UTC(y0, m0, Number(m[1]))); d = nm.toISOString().slice(0, 10); }
+    pre.giorno = d;
+  }
+  if (pre.giorno && isNaN(Date.parse(pre.giorno))) delete pre.giorno;
+  if (!pre.giorno && pre.ripeti === 'settimana' && pre.giorni_sett) pre.giorno = wd(d2n(g0)) === pre.giorni_sett[0] ? g0 : prossimo(pre.giorni_sett[0]);
+  // Persone
+  const membri = [];
+  for (const x of nomi) if (x.n && cerca(new RegExp(`\\b${x.n.replace(/[^a-z0-9 ]/g, '')}\\b`))) membri.push(x.mb.id);
+  if (membri.length) pre.membri = membri;
+  // Titolo: le parole rimaste, senza parole vuote all'inizio e alla fine
+  let resto = O.filter((_, i) => !usati[i]);
+  while (resto.length && PAROLE_VUOTE.has(semplice(resto[0]))) resto.shift();
+  while (resto.length && PAROLE_VUOTE.has(semplice(resto[resto.length - 1]))) resto.pop();
+  let titolo = resto.join(' ').replace(/[.]+$/, '');
+  if (pre.tipo === 'compleanno' && /^compleanno$/i.test(titolo) && membri.length) titolo += ' di ' + membri.map((id) => membro(id)?.nome).join(' e ');
+  if (titolo) pre.titolo = c(titolo);
+  if (!pre.giorno) pre.giorno = giornoBase;
+  return pre;
+}
+// Riassunto di cosa è stato capito, da mostrare sotto la frase
+function capito(pre) {
+  const p = [];
+  if (pre.titolo) p.push(pre.titolo);
+  if (pre.membri?.length) p.push('per ' + pre.membri.map((id) => membro(id)?.nome).join(', '));
+  p.push(fmt(pre.giorno, { weekday:'long', day:'numeric', month:'long' }) + (pre.ora_inizio ? ' alle ' + pre.ora_inizio + (pre.ora_fine ? '–' + pre.ora_fine : '') : ''));
+  if (pre.ripeti) p.push({ giorno:'ogni giorno', settimana:'ogni settimana', mese:'ogni mese', anno:'ogni anno' }[pre.ripeti]);
+  if (pre.accompagna) p.push('accompagna ' + membro(pre.accompagna)?.nome); else if (pre.da_accompagnare) p.push('da accompagnare');
+  if (pre.visibilita === 'privato') p.push('privato'); else if (pre.visibilita === 'occupato') p.push('occupato');
+  return 'Ho capito: ' + p.join(' · ') + '. Controlla e salva.';
+}
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+// Impegno che si ripete: modificare un solo giorno o tutta la serie
+function sceltaModifica(e, s) {
+  apriScheda(`
+    <div class="top"><button class="lnk l" id="smAnn">Annulla</button><h2>Modifica</h2><span class="lnk"></span></div>
+    <p class="nota" style="font-size:15px;color:var(--ink)">«${esc(e.titolo)}» si ripete. Cosa vuoi modificare?</p>
+    <button class="primary" id="smUno">Solo ${esc(fmt(s, { weekday:'long', day:'numeric', month:'long' }))}</button>
+    <button class="secondo" id="smTutte">Tutte le volte</button>
+    <p class="nota">Con "Solo …" quel giorno diventa un impegno a sé; gli altri giorni restano come sono.</p>`);
+  $('smAnn').onclick = () => apriDettaglio(e.id, s);
+  $('smUno').onclick = () => apriForm(e, null, s);
+  $('smTutte').onclick = () => apriForm(e, null);
+}
+function apriForm(e, giorno, soloGiorno, pre) {
   const nuovo = !e;
   const io = membro(D.io.membro);
-  const f = e ? JSON.parse(JSON.stringify(e)) : { id: uuid(), titolo: '', giorno, giorno_fine: null, ora_inizio: '', ora_fine: '', luogo: '', note: '', visibilita: 'condiviso', membri: io ? [io.id] : [], da_accompagnare: false, accompagna: null, ripeti: '', giorni_sett: [], fino_a: null, promemoria_min: null, mio: true };
+  // "Solo questo giorno": copia della serie spostata su quel giorno, che non si ripete
+  const copiaGiorno = (x) => ({ ...JSON.parse(JSON.stringify(x)), id: uuid(), giorno: soloGiorno,
+    giorno_fine: x.giorno_fine ? addG(soloGiorno, d2n(x.giorno_fine) - d2n(x.giorno)) : null,
+    ripeti: '', giorni_sett: [], fino_a: null, eccezioni: [] });
+  const f = e ? (soloGiorno ? copiaGiorno(e) : JSON.parse(JSON.stringify(e))) : { id: uuid(), titolo: '', giorno, giorno_fine: null, ora_inizio: '', ora_fine: '', luogo: '', note: '', visibilita: 'condiviso', membri: io ? [io.id] : [], da_accompagnare: false, accompagna: null, ripeti: '', giorni_sett: [], fino_a: null, promemoria_min: null, tipo: 'impegno', mio: true, ...(pre || {}) };
+  f.tipo = f.tipo || 'impegno';
   const mioVis = nuovo || e.mio;
   let tuttoIlGiorno = !f.ora_inizio;
   apriScheda(`
-    <div class="top"><button class="lnk l" id="fAnn">Annulla</button><h2>${nuovo ? 'Nuovo impegno' : 'Modifica'}</h2><button class="lnk r" id="fSalva">Salva</button></div>
+    <div class="top"><button class="lnk l" id="fAnn">Annulla</button><h2>${nuovo ? 'Nuovo impegno' : soloGiorno ? 'Solo ' + esc(fmt(soloGiorno, { day:'numeric', month:'short' })) : 'Modifica'}</h2><button class="lnk r" id="fSalva">Salva</button></div>
+    ${nuovo ? `<div class="card"><div class="aggiungi" style="padding:10px 0 4px"><input id="fFrase" style="background:var(--soft)" placeholder="Scrivi o detta: dentista Luca martedì alle 17" value="${esc(pre?.__frase || '')}" autocomplete="off" enterkeyhint="done">${SR ? `<button id="fMic" type="button" aria-label="Detta a voce">${ic('mic', 22)}</button>` : ''}</div>
+      <p class="nota" id="fCapito" style="margin:4px 0 10px">${pre?.__frase ? esc(capito(pre)) : 'Puoi dire chi, quando, a che ora, chi accompagna e se si ripete.'}</p></div>` : ''}
+    ${soloGiorno ? '' : `<div class="seg" id="fTipo">${TIPI_IMP.map(([v,i,t]) => `<button data-timp="${v}" class="${f.tipo === v ? 'on' : ''}">${ic(i,16)}${t}</button>`).join('')}</div>`}
     <div class="card"><input class="big-in" id="fTit" placeholder="Titolo, per esempio Danza" maxlength="80" value="${esc(f.titolo)}"></div>
     <div class="card">
       <label class="riga"><span>Giorno</span><input type="date" id="fG" value="${f.giorno}"></label>
@@ -631,7 +1295,7 @@ function apriForm(e, giorno) {
       <label class="riga" id="rI"><span>Inizio</span><input type="time" id="fI" value="${f.ora_inizio || ''}"></label>
       <label class="riga" id="rF"><span>Fine</span><input type="time" id="fF" value="${f.ora_fine || ''}"></label>
       <label class="riga" id="rGF"><span>Finisce il <small>se dura più giorni</small></span><input type="date" id="fGF" value="${f.giorno_fine || ''}"></label>
-      <label class="riga"><span>${ic('rep',16)} Si ripete</span><select id="fRip">${[['','Mai'],['giorno','Ogni giorno'],['settimana','Ogni settimana'],['mese','Ogni mese'],['anno','Ogni anno']].map(([v,t]) => `<option value="${v}" ${f.ripeti === v ? 'selected' : ''}>${t}</option>`).join('')}</select></label>
+      <label class="riga" id="rRip" ${soloGiorno ? 'hidden' : ''}><span>${ic('rep',16)} Si ripete</span><select id="fRip">${[['','Mai'],['giorno','Ogni giorno'],['settimana','Ogni settimana'],['mese','Ogni mese'],['anno','Ogni anno']].map(([v,t]) => `<option value="${v}" ${f.ripeti === v ? 'selected' : ''}>${t}</option>`).join('')}</select></label>
       <div class="riga col" id="rGS"><span class="lb">Quali giorni</span><div class="gsett">${GSETT.map((x, k) => `<button data-gs="${k+1}" class="${f.giorni_sett.includes(k+1) ? 'on' : ''}">${x}</button>`).join('')}</div></div>
       <label class="riga" id="rFino"><span>Fino al <small>facoltativo</small></span><input type="date" id="fFino" value="${f.fino_a || ''}"></label>
     </div>
@@ -653,8 +1317,12 @@ function apriForm(e, giorno) {
     <p class="err" id="fErr" role="alert"></p>
     <button class="primary" id="fSalva2">Salva</button>`);
   const agg = () => {
+    $('fTit').placeholder = { impegno: 'Titolo, per esempio Danza', scadenza: 'Per esempio Bollo auto, Revisione, Vaccino', compleanno: 'Per esempio Compleanno della nonna' }[f.tipo];
+    if (f.tipo === 'compleanno') $('fRip').value = 'anno'; // un compleanno torna ogni anno
+    $('rRip').hidden = !!soloGiorno || f.tipo === 'compleanno';
     tuttoIlGiorno = $('fTG').checked;
-    $('rI').hidden = $('rF').hidden = tuttoIlGiorno; $('rGF').hidden = !tuttoIlGiorno;
+    $('rI').hidden = $('rF').hidden = tuttoIlGiorno;
+    $('rF').querySelector('span').innerHTML = $('fGF').value > $('fG').value ? 'Fine <small>dell\'ultimo giorno</small>' : 'Fine';
     const r = $('fRip').value; $('rGS').hidden = r !== 'settimana'; $('rFino').hidden = !r;
     $('bAcc').hidden = !f.membri.some((id) => membro(id)?.tipo === 'bambino');
     f.da_accompagnare = $('fDaAcc').checked;
@@ -664,20 +1332,31 @@ function apriForm(e, giorno) {
     $('fVisNota').textContent = !mioVis ? 'Solo chi ha creato l\'impegno può cambiare chi lo vede.' : f.visibilita === 'condiviso' ? 'Tutta la famiglia vede titolo, orario e dettagli.' : f.visibilita === 'occupato' ? 'Gli altri vedono solo che sei occupato, senza titolo né dettagli.' : 'Nessun altro lo vede.';
   };
   agg();
-  $('fTG').onchange = agg; $('fDaAcc').onchange = agg; $('fRip').onchange = () => { if ($('fRip').value === 'settimana' && !f.giorni_sett.length && $('fG').value) { f.giorni_sett = [wd(d2n($('fG').value))]; document.querySelectorAll('[data-gs]').forEach((b) => b.classList.toggle('on', f.giorni_sett.includes(Number(b.dataset.gs)))); } agg(); };
+  $('fTG').onchange = agg; $('fDaAcc').onchange = agg; $('fGF').onchange = agg; $('fG').addEventListener('change', agg); $('fRip').onchange = () => { if ($('fRip').value === 'settimana' && !f.giorni_sett.length && $('fG').value) { f.giorni_sett = [wd(d2n($('fG').value))]; document.querySelectorAll('[data-gs]').forEach((b) => b.classList.toggle('on', f.giorni_sett.includes(Number(b.dataset.gs)))); } agg(); };
   $('sheetWrap').onclick = (ev) => {
     const t = ev.target;
+    const tp = t.closest('[data-timp]');
+    if (tp) {
+      f.tipo = tp.dataset.timp;
+      document.querySelectorAll('[data-timp]').forEach((b) => b.classList.toggle('on', b === tp));
+      if (f.tipo !== 'impegno') {
+        $('fTG').checked = true; // scadenze e compleanni durano tutto il giorno
+        if ($('fProm').value === '') $('fProm').value = '10080'; // avviso una settimana prima
+      } else if ($('fRip').value === 'anno' && !e) $('fRip').value = '';
+      agg(); return;
+    }
     const c = t.closest('[data-chi]'); if (c) { const id = Number(c.dataset.chi); f.membri = f.membri.includes(id) ? f.membri.filter((x) => x !== id) : [...f.membri, id]; c.classList.toggle('on'); agg(); return; }
     const a = t.closest('[data-acc]'); if (a) { f.accompagna = a.dataset.acc ? Number(a.dataset.acc) : null; agg(); return; }
     const v = t.closest('[data-vis]'); if (v && mioVis) { f.visibilita = v.dataset.vis; document.querySelectorAll('[data-vis]').forEach((b) => b.classList.toggle('on', b === v)); agg(); return; }
     const gs = t.closest('[data-gs]'); if (gs) { const k = Number(gs.dataset.gs); f.giorni_sett = f.giorni_sett.includes(k) ? f.giorni_sett.filter((x) => x !== k) : [...f.giorni_sett, k].sort(); gs.classList.toggle('on'); return; }
   };
-  $('fAnn').onclick = () => (nuovo ? chiudiScheda() : apriDettaglio(e.id, null));
+  $('fAnn').onclick = () => (nuovo ? chiudiScheda() : apriDettaglio(e.id, soloGiorno || null));
   const salva = async () => {
     const err = (m) => { $('fErr').textContent = m; $('fErr').scrollIntoView({ block: 'center' }); };
+    delete f.__frase;
     f.titolo = $('fTit').value.trim(); f.giorno = $('fG').value;
     f.ora_inizio = tuttoIlGiorno ? null : ($('fI').value || null); f.ora_fine = tuttoIlGiorno ? null : ($('fF').value || null);
-    f.giorno_fine = tuttoIlGiorno && $('fGF').value && $('fGF').value > f.giorno ? $('fGF').value : null;
+    f.giorno_fine = $('fGF').value && $('fGF').value > f.giorno ? $('fGF').value : null;
     f.ripeti = $('fRip').value; f.fino_a = f.ripeti ? ($('fFino').value || null) : null;
     f.promemoria_min = $('fProm').value === '' ? null : Number($('fProm').value);
     f.luogo = $('fLuogo').value.trim(); f.note = $('fNote').value.trim();
@@ -686,18 +1365,37 @@ function apriForm(e, giorno) {
     if (!f.titolo) return err('Scrivi un titolo.');
     if (!f.giorno) return err('Scegli il giorno.');
     if (!tuttoIlGiorno && !f.ora_inizio) return err("Scegli l'ora di inizio, oppure attiva \"Tutto il giorno\".");
-    if (f.ora_fine && f.ora_fine < f.ora_inizio) return err("L'ora di fine è prima dell'inizio.");
+    if (f.ora_fine && !f.giorno_fine && f.ora_fine < f.ora_inizio) return err("L'ora di fine è prima dell'inizio.");
     if (!f.membri.length) return err("Scegli per chi è l'impegno.");
     $('fSalva').disabled = $('fSalva2').disabled = true;
     try {
-      const r = await call('/impegno', f);
+      const r = await call('/impegno', soloGiorno ? { ...f, sostituisce: { id: e.id, giorno: soloGiorno } } : f);
       const i = D.impegni.findIndex((x) => x.id === f.id);
       if (i >= 0) D.impegni[i] = r.impegno; else D.impegni.push(r.impegno);
-      salvaCache(); chiudiScheda(); render(); toast(nuovo ? 'Impegno aggiunto' : 'Impegno aggiornato');
+      if (soloGiorno) { const serie = D.impegni.find((x) => x.id === e.id); if (serie) serie.eccezioni = [...(serie.eccezioni || []), soloGiorno]; }
+      salvaCache(); chiudiScheda(); render(); toast(nuovo ? 'Impegno aggiunto' : soloGiorno ? 'Modificato solo quel giorno' : 'Impegno aggiornato');
     } catch(e2) { err(e2.message); $('fSalva').disabled = $('fSalva2').disabled = false; }
   };
   $('fSalva').onclick = salva; $('fSalva2').onclick = salva;
-  if (nuovo) setTimeout(() => $('fTit').focus(), 50);
+  if (nuovo) {
+    // Dalla frase al modulo: si riapre il modulo già compilato, da controllare prima di salvare
+    const applica = () => {
+      const frase = $('fFrase').value.trim(); if (!frase) return;
+      const p = interpretaFrase(frase, giorno || oggi());
+      apriForm(null, p.giorno, null, { ...p, __frase: frase });
+    };
+    $('fFrase').addEventListener('keydown', (ev) => { if (ev.key === 'Enter') { ev.preventDefault(); applica(); } });
+    $('fFrase').addEventListener('change', applica);
+    if ($('fMic')) $('fMic').onclick = () => {
+      const rec = new SR(); rec.lang = 'it-IT'; rec.interimResults = true; rec.continuous = false;
+      rec.onstart = () => { $('fMic').style.opacity = '.5'; $('fCapito').textContent = 'Sto ascoltando…'; };
+      rec.onresult = (e) => { let s = ''; for (const r of e.results) s += r[0].transcript; $('fFrase').value = s; };
+      rec.onerror = (e) => { $('fCapito').textContent = e.error === 'not-allowed' || e.error === 'service-not-allowed' ? 'Il microfono non è permesso: puoi usare il microfono della tastiera.' : e.error === 'no-speech' ? 'Non ho sentito nulla, riprova.' : 'Non ho capito, riprova o scrivi la frase.'; };
+      rec.onend = () => { if ($('fMic')) $('fMic').style.opacity = ''; applica(); };
+      try { rec.start(); } catch(e) {}
+    };
+    if (!pre?.__frase) setTimeout(() => $('fTit').focus(), 50);
+  }
 }
 
 function apriMembro(id) {
@@ -807,7 +1505,7 @@ const telefono = () => iPhone() || android();
 let richiestaInstalla = null; // Android/Chrome: permette il pulsante "Installa l'app"
 window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); richiestaInstalla = e; });
 function ultimoPasso(username) {
-  for (const id of ['vAccesso','vOggi','vCal','vFam','tabs']) $(id).hidden = true;
+  for (const id of ['vAccesso','vOggi','vCal','vListe','vFam','tabs']) $(id).hidden = true;
   const ios = iPhone(), and = android(), pc = !ios && !and;
   const passiIphone = `<div class="passi">${pc ? '<h3>Su iPhone</h3>' : ''}
       <div class="passo"><span class="n">1</span><span>In basso tocca <span class="ic-in">${ic('share',16)}</span> <b>Condividi</b>.<br><small class="nota" style="margin:0">Se il link si è aperto dentro WhatsApp, prima tocca la bussola per aprirlo in Safari.</small></span></div>
@@ -872,7 +1570,7 @@ async function disattivaNotifiche() {
 let MODO = 'accedi', CODICE = '';
 async function mostraAccesso() {
   D = null; TOKEN = '';
-  for (const id of ['vOggi','vCal','vFam','tabs','vPasso']) $(id).hidden = true;
+  for (const id of ['vOggi','vCal','vListe','vFam','tabs','vPasso']) $(id).hidden = true;
   $('vAccesso').hidden = false;
   INVITO = { nome: '', famiglia: '' }; MODO = 'accedi';
   if (Q.get('reimposta')) { MODO = 'reimposta'; CODICE = Q.get('reimposta'); }
@@ -958,7 +1656,7 @@ try { DB = JSON.parse(ls.get('famiglia-prova-db') || 'null'); } catch(e){}
 // Prove salvate prima del campo "da accompagnare": lo deduce da chi accompagnava già
 if (DB) for (const e of DB.impegni) if (e.da_accompagnare === undefined) e.da_accompagnare = !!e.accompagna || e.titolo === 'Danza';
 // Prove salvate prima delle famiglie: Mamma diventa Capofamiglia della Famiglia Rossi
-if (DB) { DB.famiglia ??= 'Famiglia Rossi'; DB.capo ??= 1; }
+if (DB) { DB.famiglia ??= 'Famiglia Rossi'; DB.capo ??= 1; DB.voci ??= []; DB.prodotti ??= [['Latte', 12], ['Pane', 10], ['Mele', 6], ['Caffè', 5], ['Marmellata', 4], ['Miso', 2], ['Mozzarella', 7], ['Pasta', 9]].map(([nome, volte]) => ({ nome, volte })); }
 function demoCall(path, b) {
   if (path === '/demo/ricomincia') DB = null;
   if (!DB) {
@@ -981,7 +1679,19 @@ function demoCall(path, b) {
     add({ titolo: 'Revisione auto', giorno: addG(g, 1), ora_inizio: '09:00', ora_fine: '10:00', membri: [2] });
     add({ titolo: 'Gita scolastica', giorno: addG(g, 2), giorno_fine: addG(g, 3), membri: [3] });
     add({ titolo: 'Riunione genitori', giorno: addG(g, 3), ora_inizio: '18:00', membri: [1, 2] });
-    add({ titolo: 'Compleanno Sofia', giorno: addG(g, 9), membri: [4, 5], ripeti: 'anno' });
+    add({ titolo: 'Compleanno di Sofia', tipo: 'compleanno', giorno: addG(g, 9), membri: [4, 5], ripeti: 'anno', promemoria_min: 10080 });
+    add({ titolo: 'Bollo auto', tipo: 'scadenza', giorno: addG(g, 12), membri: [2], promemoria_min: 10080 });
+    add({ titolo: 'Weekend in montagna', giorno: addG(g, 6), giorno_fine: addG(g, 8), ora_inizio: '18:00', ora_fine: '20:00', membri: [5], luogo: 'Asiago' });
+    const voce = (o) => DB.voci.push({ id: uuid(), lista: 'spesa', fatto: false, assegnato: null, giorno: null, creato_da: 1, ...o });
+    DB.voci = [];
+    voce({ testo: 'Latte' }); voce({ testo: 'Pane' }); voce({ testo: 'Mele' }); voce({ testo: 'Caffè', fatto: true });
+    DB.prodotti = [['Latte', 12], ['Pane', 10], ['Mele', 6], ['Caffè', 5], ['Marmellata', 4], ['Miso', 2], ['Mozzarella', 7], ['Pasta', 9], ['Passata di pomodoro', 5], ['Uova', 6], ['Yogurt', 4], ['Latte di soia', 2], ['Biscotti', 3]]
+      .map(([nome, volte]) => ({ nome, volte, lista: 'spesa' }))
+      .concat([['Riordinare la camera', 8], ['Dare da mangiare al gatto', 6], ['Portare fuori la spazzatura', 9], ['Fare i compiti', 7], ['Apparecchiare la tavola', 5], ['Ritirare il pacco', 2], ['Prenotare il dentista', 1]]
+        .map(([nome, volte]) => ({ nome, volte, lista: 'cose' })));
+    voce({ lista: 'cose', testo: 'Riordinare la camera', assegnato: 3, giorno: g });
+    voce({ lista: 'cose', testo: 'Dare da mangiare al gatto', assegnato: 4 });
+    voce({ lista: 'cose', testo: 'Prenotare il dentista', assegnato: 1, giorno: addG(g, 3) });
   }
   const vista = (e) => { const mio = e.creato_da === DB.uid; if (mio || e.visibilita === 'condiviso') return { ...e, mio }; if (e.visibilita === 'privato') return null; return { ...e, mio, titolo: 'Occupato', luogo: '', note: '', da_accompagnare: false, accompagna: null, promemoria_min: null }; };
   const clone = (x) => JSON.parse(JSON.stringify(x));
@@ -1016,12 +1726,32 @@ function demoCall(path, b) {
       }
       if (path === '/reimposta') return ok({ token: 'demo', username: DB.utenti.find((u) => u.id === DB.uid)?.username || 'mamma' });
       if (path === '/demo/utente') { DB.uid = Number(b.uid); return ok({ ok: true }); }
-      if (path === '/dati') { const me = DB.utenti.find((u) => u.id === DB.uid); return ok(clone({ io: { id: me.id, username: me.username, capo: me.id === DB.capo, membro: DB.membri.find((m) => m.utente_id === me.id)?.id ?? null }, famiglia: { nome: DB.famiglia }, utenti: DB.utenti.map((u) => ({ ...u, capo: u.id === DB.capo })), membri: DB.membri, impegni: DB.impegni.filter((e) => !e.cancellato).map(vista).filter(Boolean) })); }
+      if (path === '/voce') {
+        DB.voci ??= []; DB.prodotti ??= [];
+        const r = { ...clone(b), creato_da: DB.uid }; if (r.lista !== 'cose') { r.assegnato = null; r.giorno = null; }
+        const i = DB.voci.findIndex((x) => x.id === b.id);
+        if (i < 0) { const p = DB.prodotti.find((x) => (x.lista || 'spesa') === r.lista && x.nome.toLowerCase() === r.testo.toLowerCase()); if (p) p.volte++; else DB.prodotti.push({ nome: r.testo, volte: 1, lista: r.lista }); }
+        if (i >= 0) DB.voci[i] = r; else DB.voci.push(r);
+        return ok({ voce: clone(r) });
+      }
+      if (path === '/prodotto/elimina') { DB.prodotti = (DB.prodotti || []).filter((x) => !((x.lista || 'spesa') === (b.lista || 'spesa') && x.nome.toLowerCase() === String(b.nome).toLowerCase())); return ok({ ok: true }); }
+      if (path === '/voce/elimina') { DB.voci = (DB.voci || []).filter((x) => x.id !== b.id); return ok({ ok: true }); }
+      if (path === '/voci/togli-fatte') { DB.voci = (DB.voci || []).filter((x) => !(x.lista === b.lista && x.fatto)); return ok({ ok: true }); }
+      if (path === '/impostazioni') { const u = DB.utenti.find((x) => x.id === DB.uid); if (b.riepilogo !== undefined) u.riepilogo = !!b.riepilogo; if (b.riepilogo_ora !== undefined) u.riepilogo_ora = b.riepilogo_ora; return ok({ ok: true }); }
+      if (path === '/dati') { const me = DB.utenti.find((u) => u.id === DB.uid); return ok(clone({ io: { id: me.id, username: me.username, capo: me.id === DB.capo, membro: DB.membri.find((m) => m.utente_id === me.id)?.id ?? null, riepilogo: me.riepilogo !== false, riepilogo_ora: me.riepilogo_ora || '20:00' }, voci: DB.voci || [], prodotti: [...(DB.prodotti || [])].sort((a, b) => b.volte - a.volte), famiglia: { nome: DB.famiglia }, utenti: DB.utenti.map((u) => ({ ...u, capo: u.id === DB.capo })), membri: DB.membri, impegni: DB.impegni.filter((e) => !e.cancellato).map(vista).filter(Boolean) })); }
       if (path === '/impegno') {
         const i = DB.impegni.findIndex((x) => x.id === b.id);
         if (i >= 0 && DB.impegni[i].creato_da !== DB.uid && DB.impegni[i].visibilita !== 'condiviso') return ko(new Error('Solo chi l\'ha creato può modificare questo impegno.'));
-        const r = { ...(i >= 0 ? DB.impegni[i] : { creato_da: DB.uid, eccezioni: [] }), ...clone(b) }; delete r.mio;
+        const r = { ...(i >= 0 ? DB.impegni[i] : { creato_da: DB.uid, eccezioni: [] }), ...clone(b) }; delete r.mio; delete r.sostituisce;
         if (i >= 0 && DB.impegni[i].creato_da !== DB.uid) r.visibilita = DB.impegni[i].visibilita;
+        if (b.sostituisce) {
+          // solo un giorno di una serie: la serie salta quel giorno, il nuovo resta di chi ha creato la serie
+          const s = DB.impegni.find((x) => x.id === b.sostituisce.id);
+          if (!s) return ko(new Error("L'impegno da modificare non c'è più."));
+          if (s.creato_da !== DB.uid && s.visibilita !== 'condiviso') return ko(new Error('Solo chi l\'ha creato può modificare questo impegno.'));
+          r.creato_da = s.creato_da; if (s.creato_da !== DB.uid) r.visibilita = s.visibilita;
+          s.eccezioni = [...new Set([...(s.eccezioni || []), b.sostituisce.giorno])];
+        }
         if (i >= 0) DB.impegni[i] = r; else DB.impegni.push(r);
         return ok({ impegno: clone(vista(r)) });
       }

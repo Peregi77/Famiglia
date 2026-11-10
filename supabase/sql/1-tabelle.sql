@@ -66,6 +66,41 @@ create table if not exists public.famiglia_impegni (
   cancellato boolean not null default false
 );
 
+-- Liste di famiglia: spesa e cose da fare (con persona e data facoltative)
+create table if not exists public.famiglia_voci (
+  id uuid primary key,
+  famiglia_id bigint not null references public.famiglia_famiglie(id) on delete cascade,
+  lista text not null default 'spesa' check (lista in ('spesa','cose')),
+  testo text not null,
+  fatto boolean not null default false,
+  assegnato bigint references public.famiglia_membri(id) on delete set null,
+  giorno date,
+  creato_da bigint references public.famiglia_utenti(id) on delete set null,
+  creato timestamptz not null default now(),
+  aggiornato timestamptz not null default now()
+);
+create index if not exists famiglia_voci_famiglia on public.famiglia_voci (famiglia_id);
+
+-- Prodotti già comprati: servono a suggerirli mentre si scrive la spesa ("m" → marmellata, miso).
+-- chiave = nome in minuscolo senza spazi all'inizio e alla fine; volte = quante volte è stato messo in lista.
+create table if not exists public.famiglia_prodotti (
+  famiglia_id bigint not null references public.famiglia_famiglie(id) on delete cascade,
+  chiave text not null,
+  nome text not null,
+  volte int not null default 1,
+  ultimo timestamptz not null default now(),
+  primary key (famiglia_id, chiave)
+);
+-- lista: 'spesa' (prodotti) o 'cose' (attività già fatte): ogni lista ha i suoi suggerimenti
+alter table public.famiglia_prodotti add column if not exists lista text not null default 'spesa';
+alter table public.famiglia_prodotti drop constraint if exists famiglia_prodotti_pkey;
+alter table public.famiglia_prodotti add primary key (famiglia_id, lista, chiave);
+-- La prima volta impara quello che c'è già nelle liste
+insert into public.famiglia_prodotti (famiglia_id, lista, chiave, nome)
+  select distinct on (famiglia_id, lista, lower(trim(testo))) famiglia_id, lista, lower(trim(testo)), trim(testo)
+  from public.famiglia_voci
+  on conflict do nothing;
+
 -- Accessi attivi (uno per telefono)
 create table if not exists public.famiglia_accessi_attivi (
   h text primary key,
@@ -114,6 +149,14 @@ insert into public.famiglia_config (chiave, valore)
 
 -- ---------- Aggiornamento dalla prima versione (tabelle create prima delle famiglie)
 alter table public.famiglia_impegni add column if not exists da_accompagnare boolean not null default false;
+-- tipo: impegno, scadenza (bollo, revisione, vaccino...) o compleanno (si ripete ogni anno)
+alter table public.famiglia_impegni add column if not exists tipo text not null default 'impegno';
+alter table public.famiglia_impegni drop constraint if exists famiglia_impegni_tipo_ok;
+alter table public.famiglia_impegni add constraint famiglia_impegni_tipo_ok check (tipo in ('impegno','scadenza','compleanno'));
+-- riepilogo: notifica serale con gli impegni di domani (si spegne da Famiglia › Questo telefono)
+alter table public.famiglia_utenti add column if not exists riepilogo boolean not null default true;
+-- riepilogo_ora: a che ora arriva ("HH:MM"); prima di mezzogiorno è il riepilogo di oggi, dopo è quello di domani
+alter table public.famiglia_utenti add column if not exists riepilogo_ora text not null default '20:00';
 alter table public.famiglia_utenti  add column if not exists famiglia_id bigint references public.famiglia_famiglie(id) on delete cascade;
 alter table public.famiglia_membri  add column if not exists famiglia_id bigint references public.famiglia_famiglie(id) on delete cascade;
 alter table public.famiglia_impegni add column if not exists famiglia_id bigint references public.famiglia_famiglie(id) on delete cascade;
@@ -151,7 +194,7 @@ do $$
 declare t text;
 begin
   foreach t in array array['famiglia_famiglie','famiglia_utenti','famiglia_membri','famiglia_impegni','famiglia_accessi_attivi','famiglia_link',
-                           'famiglia_tentativi_falliti','famiglia_push','famiglia_promemoria_inviati','famiglia_copie_notturne','famiglia_config'] loop
+                           'famiglia_tentativi_falliti','famiglia_push','famiglia_promemoria_inviati','famiglia_copie_notturne','famiglia_config','famiglia_voci','famiglia_prodotti'] loop
     execute format('alter table public.%I enable row level security', t);
     execute format('revoke all on public.%I from anon, authenticated', t);
     execute format('grant all on public.%I to service_role', t);
@@ -176,6 +219,7 @@ select cron.schedule('famiglia-copia-notturna', '30 2 * * *', $$
   delete from public.famiglia_tentativi_falliti where at < now() - interval '1 day';
   delete from public.famiglia_promemoria_inviati where at < now() - interval '3 days';
   delete from public.famiglia_impegni where cancellato and aggiornato < now() - interval '60 days';
+  delete from public.famiglia_voci where fatto and aggiornato < now() - interval '30 days';
 $$);
 
 -- Ogni minuto: la funzione controlla se c'è un promemoria da mandare (con il codice di famiglia_config)

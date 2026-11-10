@@ -28,6 +28,8 @@ Doppio clic su **`Prova.bat`**: si apre una finestra (lasciala aperta) e il brow
 | Tabella | Cosa contiene |
 | --- | --- |
 | `famiglia_famiglie` | Le famiglie: nome e Capofamiglia. |
+| `famiglia_voci` | Liste: spesa e cose da fare (con persona e data facoltative). |
+| `famiglia_config` | Impostazioni del server (il codice del giro dei promemoria, generato da solo). |
 | `famiglia_utenti` | Account (nome utente, password cifrata), ognuno di una sola famiglia. |
 | `famiglia_membri` | Chi può avere impegni: nome, colore, adulto/bambino/gruppo, account collegato (se c'è). |
 | `famiglia_impegni` | Gli impegni: giorno, orari, per chi, chi accompagna, visibilità, ricorrenza, promemoria. |
